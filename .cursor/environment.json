@@ -1,0 +1,8 @@
+{
+  "name": "FX Margin Scraper",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "user": "ubuntu",
+  "install": "./scripts/cloud-agent-install.sh"
+}
