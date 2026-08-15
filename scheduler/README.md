@@ -31,6 +31,5 @@ Register-ScheduledTask -TaskName "FXMarginScraper" -Action $action -Trigger $tri
 |------|-------------|
 | `data/raw/{bank}/{date}.csv` | Per-bank daily snapshot |
 | `data/raw/{bank}/{date}.json` | Per-bank daily snapshot (JSON) |
-| `data/consolidated/latest.csv` | All banks, wide format |
-| `data/consolidated/latest_long.csv` | All banks, long format (good for charts) |
+| `data/consolidated/latest.csv` | All banks, one row per pair + transaction tier |
 | `data/consolidated/{date}.csv` | Dated consolidated copy |

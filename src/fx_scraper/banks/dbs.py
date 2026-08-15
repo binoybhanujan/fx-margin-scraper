@@ -15,6 +15,7 @@ SOURCE_URL = (
     "https://www.dbs.com.sg/personal/rates-online/"
     "foreign-currency-foreign-exchange.page"
 )
+QUOTE_CURRENCY = "SGD"
 
 
 def _parse_float(value: str) -> float | None:
@@ -24,6 +25,7 @@ def _parse_float(value: str) -> float | None:
 
 class DbsScraper(BankScraper):
     name = "dbs"
+    quote_currency = QUOTE_CURRENCY
 
     def __init__(self, timeout: float = 30.0) -> None:
         self.timeout = timeout
@@ -54,19 +56,22 @@ class DbsScraper(BankScraper):
                 last_updated = group["lastUpdated"]
 
             for entry in group.get("rates", []):
-                currency = entry["currency"]
+                base_currency = entry["currency"]
                 unit = int(entry["unit"])
+                currency_pair = f"{base_currency}/{self.quote_currency}"
 
                 for tier_key, tier_label in AMOUNT_TIERS.items():
                     tier_data = entry.get(tier_key, {})
                     rates.append(
                         FxRate(
                             bank=self.name,
-                            currency=currency,
+                            base_currency=base_currency,
+                            quote_currency=self.quote_currency,
+                            currency_pair=currency_pair,
                             unit=unit,
                             group=group_name,
                             amount_tier=tier_key,
-                            amount_tier_label=tier_label,
+                            transaction_value=tier_label,
                             tt_od_sell=_parse_float(tier_data.get("ttodSell", "0")),
                             tt_buy=_parse_float(tier_data.get("ttBuy", "0")),
                             od_buy=_parse_float(tier_data.get("odBuy", "0")),

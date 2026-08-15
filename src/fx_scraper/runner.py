@@ -9,7 +9,7 @@ from datetime import date
 from pathlib import Path
 
 from fx_scraper.banks import SCRAPERS
-from fx_scraper.exporter import save_bank_csv, save_consolidated_csv, save_long_csv
+from fx_scraper.exporter import save_bank_csv, save_consolidated_csv
 from fx_scraper.models import FxRatesSnapshot
 
 logger = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ def run_all_scrapers(
             logger.info(
                 "%s: %d currencies, %d rate rows",
                 scraper.name,
-                len({r.currency for r in snapshot.rates}),
+                len({r.base_currency for r in snapshot.rates}),
                 len(snapshot.rates),
             )
         except Exception as exc:
@@ -56,9 +56,7 @@ def run_all_scrapers(
 
     if snapshots:
         save_consolidated_csv(snapshots, consolidated_dir / f"{today}.csv")
-        save_long_csv(snapshots, consolidated_dir / f"{today}_long.csv")
         save_consolidated_csv(snapshots, consolidated_dir / "latest.csv")
-        save_long_csv(snapshots, consolidated_dir / "latest_long.csv")
         logger.info(
             "Consolidated %d bank(s) -> %s",
             len(snapshots),
@@ -75,7 +73,7 @@ def run_all_scrapers(
 
 def print_summary(snapshots: list[FxRatesSnapshot]) -> None:
     for snapshot in snapshots:
-        currencies = sorted({r.currency for r in snapshot.rates})
+        currencies = sorted({r.base_currency for r in snapshot.rates})
         print(f"Bank:          {snapshot.bank}")
         print(f"Source:        {snapshot.source_url}")
         print(f"Effective:     {snapshot.effective_date}")

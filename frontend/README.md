@@ -12,8 +12,7 @@ Web UI to display FX rate trends across banks.
 
 The frontend will read from:
 
-- `data/consolidated/latest.csv` — current snapshot (all banks)
-- `data/consolidated/latest_long.csv` — long format for plotting
+- `data/consolidated/latest.csv` — current snapshot (all banks, pairs + transaction tiers)
 - `data/raw/{bank}/{date}.csv` — historical daily files
 
 ## Suggested stack (not yet implemented)

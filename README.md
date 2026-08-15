@@ -46,8 +46,7 @@ After a run:
 | File | Description |
 |------|-------------|
 | `data/raw/dbs/2026-08-15.csv` | DBS rates for that day |
-| `data/consolidated/latest.csv` | All banks, one row per bank+currency |
-| `data/consolidated/latest_long.csv` | Long format for charts/analytics |
+| `data/consolidated/latest.csv` | All banks, one row per pair + transaction tier |
 
 ## Adding a new bank
 

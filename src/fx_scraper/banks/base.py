@@ -11,6 +11,7 @@ class BankScraper(ABC):
     """Interface every bank scraper must implement."""
 
     name: str
+    quote_currency: str
 
     @abstractmethod
     def fetch(self) -> FxRatesSnapshot:
