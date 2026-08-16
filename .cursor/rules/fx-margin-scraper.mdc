@@ -1,0 +1,41 @@
+---
+description: FX margin scraper and dashboard project conventions
+alwaysApply: true
+---
+
+# FX margin scraper
+
+Python scraper plus a Vite React dashboard.
+
+## Change scope
+
+- Keep code modifications to the minimum needed for the request.
+- Edit only files required for the task. Do not refactor, restyle, or expand scope unless asked.
+- Prefer a small, local change over a new abstraction, extra files, or drive-by cleanup.
+
+## Layout
+
+- Scrapers live in `src/fx_scraper/banks/`. Register new banks in `src/fx_scraper/banks/__init__.py`.
+- Shared models: `src/fx_scraper/models.py`. CSV export: `src/fx_scraper/exporter.py`.
+- Standardized SGD bands: `src/fx_scraper/std_bands.py`.
+- Dashboard: `frontend/`. Data layer: `frontend/src/lib/` (do not rely on git ignoring `lib/`; `.gitignore` must keep `frontend/src/lib/` tracked).
+- Run scrape with `python scripts/scrape.py`. Do not commit `data/raw/` or secrets.
+
+## Scraping
+
+- HTTP with `requests` only unless a bank has no JSON/API and HTML parsing is required.
+- Each scraper returns native `FxRate` rows (`record_type="native"`). Consolidated CSV also includes standardized rows from `build_standardized_rates`.
+- After standardization, both banks must have a rate for every standardized band (explicit native-tier map + fallback, not midpoint-only skips).
+- Mid rate: use a bank-published mid when present; otherwise average of buy/sell.
+
+## Dashboard
+
+- Compare using `record_type === "standardized"` only.
+- Show SGD per 1 FCY (`rate / unit`). Group table rows by currency pair + standardized band, not by `unit`.
+- Order transaction bands by numeric SGD value (low to high).
+- Date filter loads `data/consolidated/{date}.csv` via `/repo-data` in dev (or `VITE_DATA_BASE_URL` in prod).
+
+## Git
+
+- Do not commit `frontend/node_modules/`, `frontend/dist/`, or `__pycache__`.
+- Only commit when the user asks. Do not push unless asked.
