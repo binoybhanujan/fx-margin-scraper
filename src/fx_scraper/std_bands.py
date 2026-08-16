@@ -14,10 +14,6 @@ class StandardizedTier:
     min_sgd: float
     max_sgd: float
 
-    @property
-    def midpoint_sgd(self) -> float:
-        return (self.min_sgd + self.max_sgd) / 2
-
 
 # Four canonical SGD-equivalent bands for cross-bank comparison.
 STANDARDIZED_TIERS: tuple[StandardizedTier, ...] = (
@@ -27,41 +23,37 @@ STANDARDIZED_TIERS: tuple[StandardizedTier, ...] = (
     StandardizedTier("std_40k_100k", "SGD 40,000 – 100,000", 40000, 100000),
 )
 
-# SGD-equivalent ranges for each bank's native amount tiers.
-NATIVE_TIER_RANGES: dict[str, dict[str, tuple[float, float]]] = {
+# Native amount_tier to use for each standardized band. DBS has no published
+# tier above SGD 200, so larger bands fall back to amtBtw50And200.
+STANDARDIZED_TIER_NATIVE_MAP: dict[str, dict[str, str]] = {
     "dbs": {
-        "amtLessThan50": (0, 49.99),
-        "amtBtw50And200": (50, 200),
+        "std_lt_50": "amtLessThan50",
+        "std_50_200": "amtBtw50And200",
+        "std_200_40k": "amtBtw50And200",
+        "std_40k_100k": "amtBtw50And200",
     },
     "ocbc": {
-        "tier_1": (0, 39999.99),
-        "tier_2": (40000, 100000),
+        "std_lt_50": "tier_1",
+        "std_50_200": "tier_1",
+        "std_200_40k": "tier_1",
+        "std_40k_100k": "tier_2",
     },
 }
 
 
-def _native_tier_for_midpoint(bank: str, midpoint_sgd: float) -> str | None:
-    ranges = NATIVE_TIER_RANGES.get(bank, {})
-    for tier_key, (min_sgd, max_sgd) in ranges.items():
-        if min_sgd <= midpoint_sgd <= max_sgd:
-            return tier_key
-    return None
-
-
 def build_standardized_rates(snapshot: FxRatesSnapshot) -> list[FxRate]:
-    """Map each currency to standardized bands using the bank tier that applies at band midpoint."""
+    """Map each currency onto all standardized bands via the explicit native-tier map."""
     by_currency_tier: dict[tuple[str, str], FxRate] = {}
     for rate in snapshot.rates:
         by_currency_tier[(rate.base_currency, rate.amount_tier)] = rate
 
+    bank_map = STANDARDIZED_TIER_NATIVE_MAP.get(snapshot.bank, {})
     currencies = sorted({r.base_currency for r in snapshot.rates})
     standardized: list[FxRate] = []
 
     for currency in currencies:
         for std_tier in STANDARDIZED_TIERS:
-            native_tier_key = _native_tier_for_midpoint(
-                snapshot.bank, std_tier.midpoint_sgd
-            )
+            native_tier_key = bank_map.get(std_tier.key)
             if native_tier_key is None:
                 continue
             source = by_currency_tier.get((currency, native_tier_key))

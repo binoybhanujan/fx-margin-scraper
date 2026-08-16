@@ -18,8 +18,8 @@ fx-margin-scraper/
 ├── scripts/
 │   └── scrape.py            # Run scraper (no install required)
 ├── data/
-│   ├── raw/{bank}/          # Per-bank daily snapshots (gitignored)
-│   └── consolidated/        # Merged output (gitignored)
+│   ├── raw/{bank}/          # Per-bank snapshots (gitignored)
+│   └── consolidated/        # Merged CSVs (committed; GitHub source of truth)
 ├── scheduler/               # Daily run setup (Task Scheduler / cron)
 ├── frontend/                # React comparison dashboard
 ├── pyproject.toml
@@ -46,7 +46,7 @@ After a run:
 | File | Description |
 |------|-------------|
 | `data/raw/dbs/2026-08-15.csv` | DBS rates for that day |
-| `data/consolidated/latest.csv` | All banks — native + standardized transaction bands |
+| `data/consolidated/latest.csv` | All banks — native + standardized bands (committed to GitHub) |
 
 ## Adding a new bank
 
@@ -67,7 +67,11 @@ Open http://localhost:5173 — see [frontend/README.md](frontend/README.md).
 
 ## Daily scheduling
 
-See [scheduler/README.md](scheduler/README.md) for Windows Task Scheduler and cron setup.
+GitHub Actions runs the scraper every day at **6:00 PM IST** and commits `data/consolidated/` (`latest.csv`, `{date}.csv`, `index.json`). That folder is the shared source of truth for the dashboard.
+
+Workflow: `.github/workflows/daily-scrape.yml` (also runnable from **Actions → Daily FX scrape → Run workflow**).
+
+Local laptop scheduling is optional: see [scheduler/README.md](scheduler/README.md).
 
 ## Banks supported
 

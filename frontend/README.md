@@ -30,7 +30,7 @@ The Vite dev server serves CSV/JSON from `../data` at `/repo-data/`.
 
 ## Production data URL
 
-Set `VITE_DATA_BASE_URL` to your GitHub Raw path (after daily Actions commits data):
+Consolidated CSVs on `main` are the source of truth. For a deployed dashboard, set:
 
 ```bash
 # frontend/.env.production

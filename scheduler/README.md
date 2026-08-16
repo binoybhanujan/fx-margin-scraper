@@ -1,6 +1,12 @@
 # Daily scheduling
 
-Run the scraper once per day so `data/consolidated/latest.csv` stays current for the frontend.
+Run the scraper once per day so `data/consolidated/` stays current. **Preferred:** GitHub Actions (`.github/workflows/daily-scrape.yml`), which commits consolidated CSVs to the repo.
+
+Local Task Scheduler / cron below is optional if you scrape on your own machine.
+
+## GitHub Actions
+
+See the root [README.md](../README.md#daily-scheduling). The workflow scrapes at 6:00 PM IST and pushes `data/consolidated/`.
 
 ## Windows Task Scheduler
 
