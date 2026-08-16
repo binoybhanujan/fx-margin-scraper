@@ -209,6 +209,9 @@ data/consolidated/**
 # Frontend
 frontend/node_modules/
 frontend/dist/
+# Python packaging ignores `lib/`; keep the dashboard data layer.
+!frontend/src/lib/
+!frontend/src/lib/**
 
 # Legacy root output
 fx_rates.csv
