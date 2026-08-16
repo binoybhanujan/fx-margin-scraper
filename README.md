@@ -20,7 +20,6 @@ fx-margin-scraper/
 ├── data/
 │   ├── raw/{bank}/          # Per-bank snapshots (gitignored)
 │   └── consolidated/        # Merged CSVs (committed; GitHub source of truth)
-├── scheduler/               # Daily run setup (Task Scheduler / cron)
 ├── frontend/                # React comparison dashboard
 ├── pyproject.toml
 └── requirements.txt
@@ -70,8 +69,6 @@ Open http://localhost:5173 — see [frontend/README.md](frontend/README.md).
 GitHub Actions runs the scraper every day at **6:00 PM IST** and commits `data/consolidated/` (`latest.csv`, `{date}.csv`, `index.json`). That folder is the shared source of truth for the dashboard.
 
 Workflow: `.github/workflows/daily-scrape.yml` (also runnable from **Actions → Daily FX scrape → Run workflow**).
-
-Local laptop scheduling is optional: see [scheduler/README.md](scheduler/README.md).
 
 ## Banks supported
 
