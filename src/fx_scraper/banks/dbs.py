@@ -8,7 +8,13 @@ from typing import Any
 import requests
 
 from fx_scraper.banks.base import BankScraper
-from fx_scraper.models import AMOUNT_TIERS, FxRate, FxRatesSnapshot
+from fx_scraper.models import FxRate, FxRatesSnapshot, compute_mid_rate
+
+# DBS transaction tiers (SGD equivalent).
+AMOUNT_TIERS: dict[str, str] = {
+    "amtLessThan50": "SGD < 50",
+    "amtBtw50And200": "SGD 50 – 200",
+}
 
 API_URL = "https://www.dbs.com.sg/sg-rates-api/v1/api/sgrates/getSGFXRates"
 SOURCE_URL = (
@@ -62,8 +68,12 @@ class DbsScraper(BankScraper):
 
                 for tier_key, tier_label in AMOUNT_TIERS.items():
                     tier_data = entry.get(tier_key, {})
+                    tt_od_sell = _parse_float(tier_data.get("ttodSell", "0"))
+                    tt_buy = _parse_float(tier_data.get("ttBuy", "0"))
+                    od_buy = _parse_float(tier_data.get("odBuy", "0"))
                     rates.append(
                         FxRate(
+                            record_type="native",
                             bank=self.name,
                             base_currency=base_currency,
                             quote_currency=self.quote_currency,
@@ -72,9 +82,12 @@ class DbsScraper(BankScraper):
                             group=group_name,
                             amount_tier=tier_key,
                             transaction_value=tier_label,
-                            tt_od_sell=_parse_float(tier_data.get("ttodSell", "0")),
-                            tt_buy=_parse_float(tier_data.get("ttBuy", "0")),
-                            od_buy=_parse_float(tier_data.get("odBuy", "0")),
+                            std_amount_tier=None,
+                            std_transaction_value=None,
+                            tt_od_sell=tt_od_sell,
+                            tt_buy=tt_buy,
+                            od_buy=od_buy,
+                            mid_rate=compute_mid_rate(tt_od_sell, tt_buy),
                         )
                     )
 

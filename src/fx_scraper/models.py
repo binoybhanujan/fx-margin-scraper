@@ -4,17 +4,25 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-# SGD equivalent transaction value tiers used by DBS (and likely others).
-AMOUNT_TIERS: dict[str, str] = {
-    "amtLessThan50": "SGD < 50",
-    "amtBtw50And200": "SGD 50 – 200",
-}
+RATE_COLUMNS: list[str] = ["tt_od_sell", "tt_buy", "od_buy", "mid_rate"]
 
-RATE_COLUMNS: list[str] = ["tt_od_sell", "tt_buy", "od_buy"]
+
+def compute_mid_rate(
+    tt_od_sell: float | None,
+    tt_buy: float | None,
+    published_mid: float | None = None,
+) -> float | None:
+    """Mid rate: bank-published value, or average of buy/sell when both exist."""
+    if published_mid is not None:
+        return published_mid
+    if tt_od_sell is not None and tt_buy is not None:
+        return (tt_od_sell + tt_buy) / 2
+    return None
 
 
 @dataclass
 class FxRate:
+    record_type: str  # "native" | "standardized"
     bank: str
     base_currency: str
     quote_currency: str
@@ -23,9 +31,12 @@ class FxRate:
     group: str
     amount_tier: str
     transaction_value: str
+    std_amount_tier: str | None
+    std_transaction_value: str | None
     tt_od_sell: float | None
     tt_buy: float | None
     od_buy: float | None
+    mid_rate: float | None
 
 
 @dataclass

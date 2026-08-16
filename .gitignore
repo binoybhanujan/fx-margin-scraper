@@ -206,6 +206,10 @@ data/consolidated/**
 !data/raw/.gitkeep
 !data/consolidated/.gitkeep
 
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
 # Legacy root output
 fx_rates.csv
 

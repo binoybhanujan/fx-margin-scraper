@@ -20,6 +20,22 @@ RAW_DIR = DATA_DIR / "raw"
 CONSOLIDATED_DIR = DATA_DIR / "consolidated"
 
 
+def _write_consolidated_index(consolidated_dir: Path) -> None:
+    """Write index.json listing dated consolidated CSV files for the dashboard."""
+    dates = sorted(
+        p.stem for p in consolidated_dir.glob("*.csv")
+        if p.stem != "latest" and not p.stem.endswith("_long")
+    )
+    index = {
+        "latest": "latest.csv",
+        "dates": dates,
+    }
+    (consolidated_dir / "index.json").write_text(
+        json.dumps(index, indent=2),
+        encoding="utf-8",
+    )
+
+
 def run_all_scrapers(
     data_dir: Path | None = None,
 ) -> list[FxRatesSnapshot]:
@@ -57,6 +73,7 @@ def run_all_scrapers(
     if snapshots:
         save_consolidated_csv(snapshots, consolidated_dir / f"{today}.csv")
         save_consolidated_csv(snapshots, consolidated_dir / "latest.csv")
+        _write_consolidated_index(consolidated_dir)
         logger.info(
             "Consolidated %d bank(s) -> %s",
             len(snapshots),

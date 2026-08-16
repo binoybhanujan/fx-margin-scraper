@@ -1,6 +1,6 @@
 # FX Margin Scraper
 
-Collect foreign exchange rates from multiple Singapore banks, consolidate them into a single dataset, and (planned) visualize trends in a web frontend.
+Collect foreign exchange rates from multiple Singapore banks, consolidate them into a single dataset, and compare rates in a web dashboard.
 
 ## Project structure
 
@@ -21,7 +21,7 @@ fx-margin-scraper/
 │   ├── raw/{bank}/          # Per-bank daily snapshots (gitignored)
 │   └── consolidated/        # Merged output (gitignored)
 ├── scheduler/               # Daily run setup (Task Scheduler / cron)
-├── frontend/                # Planned trend visualization UI
+├── frontend/                # React comparison dashboard
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -46,7 +46,7 @@ After a run:
 | File | Description |
 |------|-------------|
 | `data/raw/dbs/2026-08-15.csv` | DBS rates for that day |
-| `data/consolidated/latest.csv` | All banks, one row per pair + transaction tier |
+| `data/consolidated/latest.csv` | All banks — native + standardized transaction bands |
 
 ## Adding a new bank
 
@@ -54,16 +54,24 @@ After a run:
 2. Register it in `src/fx_scraper/banks/__init__.py` (`SCRAPERS` list).
 3. Run `python scripts/scrape.py` — output is auto-consolidated.
 
+## Dashboard (frontend)
+
+Compare bank rates side-by-side and view trends:
+
+```bash
+python scripts/scrape.py          # ensure data/ is populated
+cd frontend && npm install && npm run dev
+```
+
+Open http://localhost:5173 — see [frontend/README.md](frontend/README.md).
+
 ## Daily scheduling
 
 See [scheduler/README.md](scheduler/README.md) for Windows Task Scheduler and cron setup.
 
-## Frontend (planned)
-
-See [frontend/README.md](frontend/README.md).
-
 ## Banks supported
 
-| Bank | Status |
-|------|--------|
-| DBS  | ✅ Implemented |
+| Bank | Status | Native tiers | Standardized bands (dashboard) |
+|------|--------|--------------|--------------------------------|
+| DBS  | ✅ Implemented | SGD &lt; 50, SGD 50 – 200 | 4 bands (see `std_bands.py`) |
+| OCBC | ✅ Implemented | SGD 0 – 39,999.99, SGD 40,000 – 100,000 | Same 4 standardized bands |
