@@ -20,6 +20,7 @@ interface RateTrendChartProps {
 const COLORS: Record<string, string> = {
   dbs: "#3b82f6",
   ocbc: "#f59e0b",
+  uob: "#10b981",
 };
 
 export function RateTrendChart({

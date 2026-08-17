@@ -76,3 +76,4 @@ Workflow: `.github/workflows/daily-scrape.yml` (also runnable from **Actions →
 |------|--------|--------------|--------------------------------|
 | DBS  | ✅ Implemented | SGD &lt; 50, SGD 50 – 200 | 4 bands (see `std_bands.py`) |
 | OCBC | ✅ Implemented | SGD 0 – 39,999.99, SGD 40,000 – 100,000 | Same 4 standardized bands |
+| UOB  | ✅ Implemented | Single indicative board (no SGD amount tiers) | Same 4 bands (fallback to board) |

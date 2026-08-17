@@ -38,6 +38,12 @@ STANDARDIZED_TIER_NATIVE_MAP: dict[str, dict[str, str]] = {
         "std_200_40k": "tier_1",
         "std_40k_100k": "tier_2",
     },
+    "uob": {
+        "std_lt_50": "board",
+        "std_50_200": "board",
+        "std_200_40k": "board",
+        "std_40k_100k": "board",
+    },
 }
 
 

@@ -7,6 +7,11 @@ alwaysApply: true
 
 Python scraper plus a Vite React dashboard.
 
+## Understand Before You Change
+
+- Before making any code changes, inspect the existing project structure, architecture, dependencies, configuration, data models, and relevant documentation.
+- Do not make assumptions about existing functionality
+
 ## Change scope
 
 - Keep code modifications to the minimum needed for the request.
@@ -39,3 +44,20 @@ Python scraper plus a Vite React dashboard.
 
 - Do not commit `frontend/node_modules/`, `frontend/dist/`, or `__pycache__`.
 - Only commit when the user asks. Do not push unless asked.
+
+## Treat Financial Data as Source-of-Truth Data
+
+- Never invent, infer, or guess financial values, rate types, transaction types, currency pairs, or business rules. Use the definitions provided by the source. Preserve the original scraped value and source provenance wherever possible.
+- Every standardised record should retain appropriate metadata such as bank, currency/currency pair, rate type, source URL, effective timestamp, and scrape timestamp.
+
+## Do Not Guess When Requirements Are Unclear
+
+- When requirements, source data, business rules, or expected behaviour are ambiguous, do not invent an implementation. Identify the ambiguity and ask for clarification or clearly state the assumption before proceeding
+
+## Preserve the Application Architecture
+
+- Treat this repo as two layers connected by files: Python collectors write CSV/JSON; the Vite React app only reads those files. Do not introduce an API server, database, or browser-to-bank calls unless the user explicitly asks.
+- Keep the existing pipeline: bank scrapers → shared `FxRate` / snapshot model → optional standardized rows in the exporter → `data/raw` and `data/consolidated` (including dated CSV + `index.json`).
+- New banks belong in `src/fx_scraper/banks/` and must be registered in `SCRAPERS`. Do not add one-off scrape scripts or a second export format.
+- The dashboard must keep using the CSV contract (`record_type`, standardized bands, `unit` for normalization only). Do not move comparison logic into the scrapers or duplicate CSV parsing outside `frontend/src/lib/`.
+- Extend by adding a scraper, a CSV column, or a UI filter—not by replacing the file-based architecture. If a request would require a new runtime (API, queue, DB), state that and wait for confirmation before implementing it.

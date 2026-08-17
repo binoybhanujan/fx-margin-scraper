@@ -179,7 +179,7 @@ export default function App() {
             FX Rate Comparison
           </h1>
           <p className="mt-1 text-sm text-slate-400">
-            Compare DBS and OCBC board rates — SGD per 1 unit of foreign
+            Compare DBS, OCBC, and UOB board rates — SGD per 1 unit of foreign
             currency (banks may quote per 1 or per 100 FCY; rates are normalized).
           </p>
         </div>
