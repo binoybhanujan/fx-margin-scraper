@@ -20,6 +20,20 @@ def compute_mid_rate(
     return None
 
 
+def compute_margin_pct_of_mid(
+    rate: float | None,
+    mid: float | None,
+    *,
+    customer_buys_fcy: bool,
+) -> float | None:
+    """Margin vs mid as a percent of mid. None if rate or mid is missing."""
+    if rate is None or mid is None or mid == 0:
+        return None
+    if customer_buys_fcy:
+        return (rate - mid) / mid * 100
+    return (mid - rate) / mid * 100
+
+
 @dataclass
 class FxRate:
     record_type: str  # "native" | "standardized"

@@ -4,8 +4,8 @@ React dashboard to compare FX rates across banks (DBS, OCBC).
 
 ## Features
 
-- Side-by-side bank comparison table (normalized SGD per 1 unit of FCY)
-- Filters: currency, transaction band, rate type (buy/sell FCY)
+- Side-by-side bank comparison table (margin % of mid; lower is better)
+- Filters: currency, transaction band, margin type (buy/sell FCY)
 - Trend chart from historical `data/consolidated/{date}.csv` files
 - Highlights best bank per row
 

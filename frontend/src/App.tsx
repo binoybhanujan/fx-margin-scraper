@@ -17,7 +17,6 @@ import {
 import {
   getRateValue,
   getTransactionBand,
-  normalizeRate,
   rateTypeLabel,
 } from "./lib/normalize";
 import type { FxRateRow, RateType, TrendPoint } from "./lib/types";
@@ -105,9 +104,18 @@ export default function App() {
 
   const banks = useMemo(() => uniqueBanks(snapshotRows), [snapshotRows]);
   const currencies = useMemo(
-    () => uniqueBaseCurrencies(snapshotRows),
-    [snapshotRows],
+    () => uniqueBaseCurrencies(snapshotRows, rateType),
+    [snapshotRows, rateType],
   );
+
+  useEffect(() => {
+    if (baseCurrency !== "all" && !currencies.includes(baseCurrency)) {
+      setBaseCurrency("all");
+    }
+    if (currencies.length > 0 && !currencies.includes(trendCurrency)) {
+      setTrendCurrency(currencies.includes("USD") ? "USD" : currencies[0]);
+    }
+  }, [currencies, baseCurrency, trendCurrency]);
   const transactionValues = useMemo(
     () => uniqueTransactionValues(snapshotRows),
     [snapshotRows],
@@ -146,11 +154,10 @@ export default function App() {
           }
           const dedupeKey = `${date}|${row.bank}`;
           if (transactionValue === "all" && seen.has(dedupeKey)) continue;
-          const raw = getRateValue(row, rateType);
-          const normalized = normalizeRate(raw, row.unit);
-          if (normalized == null) continue;
+          const marginPct = getRateValue(row, rateType);
+          if (marginPct == null) continue;
           seen.add(dedupeKey);
-          points.push({ date, bank: row.bank, rate: normalized });
+          points.push({ date, bank: row.bank, rate: marginPct });
         }
       }
       setTrendPoints(points);
@@ -176,11 +183,11 @@ export default function App() {
       <header className="border-b border-slate-800 bg-slate-900/50">
         <div className="mx-auto max-w-6xl px-4 py-6">
           <h1 className="text-2xl font-semibold tracking-tight">
-            FX Rate Comparison
+            FX Margin Comparison
           </h1>
           <p className="mt-1 text-sm text-slate-400">
-            Compare DBS, OCBC, and UOB board rates — SGD per 1 unit of foreign
-            currency (banks may quote per 1 or per 100 FCY; rates are normalized).
+            Compare DBS, OCBC, and UOB board spreads as margin % of mid.
+            Lower is better for the customer.
           </p>
         </div>
       </header>
@@ -240,7 +247,7 @@ export default function App() {
 
             <section className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/30 p-4">
               <div className="flex flex-wrap items-end gap-4">
-                <h2 className="text-lg font-medium">Rate trends</h2>
+                <h2 className="text-lg font-medium">Margin trends</h2>
                 <label className="flex flex-col gap-1 text-sm">
                   <span className="text-slate-400">Trend currency</span>
                   <select

@@ -4,7 +4,6 @@ import {
   getTransactionBand,
   isLowerBetter,
   isStandardizedRow,
-  normalizeRate,
   sortTransactionBands,
   transactionBandSortKey,
 } from "./normalize";
@@ -47,10 +46,10 @@ export function buildComparisonRows(
     const banks: ComparisonRow["banks"] = {};
 
     for (const row of bankRows) {
-      const raw = getRateValue(row, rateType);
+      const marginPct = getRateValue(row, rateType);
       banks[row.bank] = {
-        rawRate: raw,
-        normalizedRate: normalizeRate(raw, row.unit),
+        rawRate: marginPct,
+        normalizedRate: marginPct,
         last_updated: row.last_updated,
       };
     }
@@ -58,16 +57,16 @@ export function buildComparisonRows(
     const candidates = Object.entries(banks).filter(
       ([, v]) => v.normalizedRate != null,
     );
-    let bestBank: string | null = null;
-    if (candidates.length > 0) {
-      const lower = isLowerBetter(rateType);
-      bestBank = candidates.reduce((best, [bank, v]) => {
-        const bestVal = banks[best].normalizedRate!;
-        const val = v.normalizedRate!;
-        if (lower) return val < bestVal ? bank : best;
-        return val > bestVal ? bank : best;
-      }, candidates[0][0]);
+    if (candidates.length === 0) {
+      continue;
     }
+    const lower = isLowerBetter(rateType);
+    const bestBank = candidates.reduce((best, [bank, v]) => {
+      const bestVal = banks[best].normalizedRate!;
+      const val = v.normalizedRate!;
+      if (lower) return val < bestVal ? bank : best;
+      return val > bestVal ? bank : best;
+    }, candidates[0][0]);
 
     comparison.push({
       currency_pair: sample.currency_pair,
@@ -89,8 +88,16 @@ export function buildComparisonRows(
   });
 }
 
-export function uniqueBaseCurrencies(rows: FxRateRow[]): string[] {
-  return [...new Set(rows.map((r) => r.base_currency))].sort();
+export function uniqueBaseCurrencies(
+  rows: FxRateRow[],
+  rateType?: RateType,
+): string[] {
+  const relevant = rateType
+    ? rows.filter(
+        (row) => isStandardizedRow(row) && getRateValue(row, rateType) != null,
+      )
+    : rows;
+  return [...new Set(relevant.map((r) => r.base_currency))].sort();
 }
 
 export function uniqueTransactionValues(rows: FxRateRow[]): string[] {

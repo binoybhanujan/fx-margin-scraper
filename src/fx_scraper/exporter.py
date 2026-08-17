@@ -7,7 +7,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from fx_scraper.models import FxRatesSnapshot
+from fx_scraper.models import FxRatesSnapshot, compute_margin_pct_of_mid
 from fx_scraper.std_bands import build_standardized_rates
 
 CSV_FIELDNAMES = [
@@ -29,6 +29,9 @@ CSV_FIELDNAMES = [
     "tt_buy",
     "od_buy",
     "mid_rate",
+    "sell_margin_pct",
+    "buy_margin_pct",
+    "od_buy_margin_pct",
 ]
 
 
@@ -37,6 +40,16 @@ def _rate_row(rate: Any, snapshot: FxRatesSnapshot) -> dict[str, Any]:
     row["effective_date"] = snapshot.effective_date
     row["last_updated"] = snapshot.last_updated
     row["scraped_at"] = snapshot.scraped_at
+    mid = rate.mid_rate
+    row["sell_margin_pct"] = compute_margin_pct_of_mid(
+        rate.tt_od_sell, mid, customer_buys_fcy=True
+    )
+    row["buy_margin_pct"] = compute_margin_pct_of_mid(
+        rate.tt_buy, mid, customer_buys_fcy=False
+    )
+    row["od_buy_margin_pct"] = compute_margin_pct_of_mid(
+        rate.od_buy, mid, customer_buys_fcy=False
+    )
     return row
 
 

@@ -26,7 +26,34 @@ export function getRateValue(
   row: FxRateRow,
   rateType: "tt_od_sell" | "tt_buy" | "od_buy" | "mid_rate",
 ): number | null {
-  return row[rateType];
+  switch (rateType) {
+    case "tt_od_sell":
+      return (
+        row.sell_margin_pct ??
+        marginPctOfMid(row.tt_od_sell, row.mid_rate, true)
+      );
+    case "tt_buy":
+      return (
+        row.buy_margin_pct ??
+        marginPctOfMid(row.tt_buy, row.mid_rate, false)
+      );
+    case "od_buy":
+      return (
+        row.od_buy_margin_pct ??
+        marginPctOfMid(row.od_buy, row.mid_rate, false)
+      );
+    case "mid_rate":
+      return null;
+  }
+}
+
+function marginPctOfMid(
+  rate: number | null,
+  mid: number | null,
+  customerBuysFcy: boolean,
+): number | null {
+  if (rate == null || mid == null || mid === 0) return null;
+  return customerBuysFcy ? ((rate - mid) / mid) * 100 : ((mid - rate) / mid) * 100;
 }
 
 /** Band used for cross-bank comparison (standardized tiers only in the dashboard). */
@@ -38,11 +65,11 @@ export function isStandardizedRow(row: FxRateRow): boolean {
   return row.record_type === "standardized";
 }
 
-/** Lower normalized rate is better when buying FCY from the bank (tt_od_sell). */
+/** Lower margin % of mid is better for the customer on both buy and sell. */
 export function isLowerBetter(
-  rateType: "tt_od_sell" | "tt_buy" | "od_buy" | "mid_rate",
+  _rateType: "tt_od_sell" | "tt_buy" | "od_buy" | "mid_rate",
 ): boolean {
-  return rateType === "tt_od_sell";
+  return true;
 }
 
 export function rateTypeLabel(
@@ -50,21 +77,19 @@ export function rateTypeLabel(
 ): string {
   switch (rateType) {
     case "tt_od_sell":
-      return "Buy FCY (bank sell / TT/OD sell)";
+      return "Buy FCY margin % of mid (bank sell)";
     case "tt_buy":
-      return "Sell FCY (TT buy)";
+      return "Sell FCY margin % of mid (TT buy)";
     case "od_buy":
-      return "Sell FCY (OD buy)";
+      return "Sell FCY margin % of mid (OD buy)";
     case "mid_rate":
       return "Mid rate";
   }
 }
 
-export function formatRate(value: number | null, digits = 6): string {
+export function formatRate(value: number | null, digits = 3): string {
   if (value == null) return "—";
-  if (value >= 100) return value.toFixed(2);
-  if (value >= 1) return value.toFixed(4);
-  return value.toFixed(digits);
+  return `${value.toFixed(digits)}%`;
 }
 
 export function sortTransactionBands(values: string[]): string[] {

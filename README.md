@@ -1,6 +1,6 @@
 # FX Margin Scraper
 
-Collect foreign exchange rates from multiple Singapore banks, consolidate them into a single dataset, and compare rates in a web dashboard.
+Collect foreign exchange rates from multiple Singapore banks, consolidate them into a single dataset, and compare **margin % of mid** in a web dashboard.
 
 ## Project structure
 
@@ -45,7 +45,7 @@ After a run:
 | File | Description |
 |------|-------------|
 | `data/raw/dbs/2026-08-15.csv` | DBS rates for that day |
-| `data/consolidated/latest.csv` | All banks — native + standardized bands (committed to GitHub) |
+| `data/consolidated/latest.csv` | All banks — native + standardized bands, plus buy/sell/OD margin % of mid |
 
 ## Adding a new bank
 

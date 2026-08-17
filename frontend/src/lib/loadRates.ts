@@ -34,6 +34,9 @@ function parseRow(raw: Record<string, string>): FxRateRow {
     tt_buy: parseNumber(raw.tt_buy),
     od_buy: parseNumber(raw.od_buy),
     mid_rate: parseNumber(raw.mid_rate),
+    sell_margin_pct: parseNumber(raw.sell_margin_pct),
+    buy_margin_pct: parseNumber(raw.buy_margin_pct),
+    od_buy_margin_pct: parseNumber(raw.od_buy_margin_pct),
   };
 }
 

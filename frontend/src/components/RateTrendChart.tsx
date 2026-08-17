@@ -52,13 +52,18 @@ export function RateTrendChart({
   return (
     <div className="h-80 w-full">
       <p className="mb-2 text-sm text-slate-400">
-        {currencyPair} — {rateLabel} (SGD per 1 FCY)
+        {currencyPair} — {rateLabel}
       </p>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={series} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
           <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 12 }} />
-          <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} domain={["auto", "auto"]} />
+          <YAxis
+            stroke="#94a3b8"
+            tick={{ fontSize: 12 }}
+            domain={["auto", "auto"]}
+            tickFormatter={(value: number) => `${value}%`}
+          />
           <Tooltip
             contentStyle={{
               background: "#0f172a",

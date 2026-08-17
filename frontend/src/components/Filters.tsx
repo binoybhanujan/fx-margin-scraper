@@ -71,16 +71,15 @@ export function Filters({
       </label>
 
       <label className="flex flex-col gap-1 text-sm">
-        <span className="text-slate-400">Rate type</span>
+        <span className="text-slate-400">Margin type</span>
         <select
           className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2"
           value={rateType}
           onChange={(e) => onRateTypeChange(e.target.value as RateType)}
         >
-          <option value="tt_od_sell">Buy FCY (TT/OD sell)</option>
-          <option value="tt_buy">Sell FCY (TT buy)</option>
-          <option value="od_buy">Sell FCY (OD buy)</option>
-          <option value="mid_rate">Mid rate</option>
+          <option value="tt_od_sell">Buy FCY (sell margin % of mid)</option>
+          <option value="tt_buy">Sell FCY (buy margin % of mid)</option>
+          <option value="od_buy">Sell FCY OD (OD buy margin % of mid)</option>
         </select>
       </label>
     </div>

@@ -10,7 +10,7 @@ export function ComparisonTable({ rows, banks }: ComparisonTableProps) {
   if (rows.length === 0) {
     return (
       <p className="text-slate-400 text-sm py-8 text-center">
-        No rates match the selected filters.
+        No margins match the selected filters.
       </p>
     );
   }
@@ -26,7 +26,7 @@ export function ComparisonTable({ rows, banks }: ComparisonTableProps) {
               <th key={bank} className="px-4 py-3 text-left capitalize">
                 {bank}
                 <span className="block text-xs font-normal text-slate-500">
-                  SGD / FCY
+                  Margin % of mid
                 </span>
               </th>
             ))}
