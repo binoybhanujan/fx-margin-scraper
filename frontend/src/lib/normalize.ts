@@ -1,4 +1,4 @@
-import type { FxRateRow } from "./types";
+import type { FxRateRow, RateType } from "./types";
 
 /** Sort key from standardized band label (lowest SGD in the band). */
 export function transactionBandSortKey(label: string): number {
@@ -24,7 +24,7 @@ export function normalizeRate(rate: number | null, unit: number): number | null 
 
 export function getRateValue(
   row: FxRateRow,
-  rateType: "tt_od_sell" | "tt_buy" | "od_buy" | "mid_rate",
+  rateType: RateType,
 ): number | null {
   switch (rateType) {
     case "tt_od_sell":
@@ -37,13 +37,6 @@ export function getRateValue(
         row.buy_margin_pct ??
         marginPctOfMid(row.tt_buy, row.mid_rate, false)
       );
-    case "od_buy":
-      return (
-        row.od_buy_margin_pct ??
-        marginPctOfMid(row.od_buy, row.mid_rate, false)
-      );
-    case "mid_rate":
-      return null;
   }
 }
 
@@ -66,24 +59,16 @@ export function isStandardizedRow(row: FxRateRow): boolean {
 }
 
 /** Lower margin % of mid is better for the customer on both buy and sell. */
-export function isLowerBetter(
-  _rateType: "tt_od_sell" | "tt_buy" | "od_buy" | "mid_rate",
-): boolean {
+export function isLowerBetter(_rateType: RateType): boolean {
   return true;
 }
 
-export function rateTypeLabel(
-  rateType: "tt_od_sell" | "tt_buy" | "od_buy" | "mid_rate",
-): string {
+export function rateTypeLabel(rateType: RateType): string {
   switch (rateType) {
     case "tt_od_sell":
       return "Buy FCY margin % of mid (bank sell)";
     case "tt_buy":
-      return "Sell FCY margin % of mid (TT buy)";
-    case "od_buy":
-      return "Sell FCY margin % of mid (OD buy)";
-    case "mid_rate":
-      return "Mid rate";
+      return "Sell FCY margin % of mid (bank buy)";
   }
 }
 

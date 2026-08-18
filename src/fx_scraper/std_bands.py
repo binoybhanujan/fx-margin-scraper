@@ -44,6 +44,12 @@ STANDARDIZED_TIER_NATIVE_MAP: dict[str, dict[str, str]] = {
         "std_200_40k": "board",
         "std_40k_100k": "board",
     },
+    "hsbc": {
+        "std_lt_50": "board",
+        "std_50_200": "board",
+        "std_200_40k": "board",
+        "std_40k_100k": "board",
+    },
 }
 
 
@@ -80,7 +86,6 @@ def build_standardized_rates(snapshot: FxRatesSnapshot) -> list[FxRate]:
                     std_transaction_value=std_tier.label,
                     tt_od_sell=source.tt_od_sell,
                     tt_buy=source.tt_buy,
-                    od_buy=source.od_buy,
                     mid_rate=source.mid_rate,
                 )
             )

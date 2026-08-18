@@ -2,6 +2,7 @@
 
 from fx_scraper.banks.base import BankScraper
 from fx_scraper.banks.dbs import DbsScraper
+from fx_scraper.banks.hsbc import HsbcScraper
 from fx_scraper.banks.ocbc import OcbcScraper
 from fx_scraper.banks.uob import UobScraper
 
@@ -10,4 +11,5 @@ SCRAPERS: list[BankScraper] = [
     DbsScraper(),
     OcbcScraper(),
     UobScraper(),
+    HsbcScraper(),
 ]

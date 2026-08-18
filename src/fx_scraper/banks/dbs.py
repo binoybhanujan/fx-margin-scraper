@@ -70,7 +70,6 @@ class DbsScraper(BankScraper):
                     tier_data = entry.get(tier_key, {})
                     tt_od_sell = _parse_float(tier_data.get("ttodSell", "0"))
                     tt_buy = _parse_float(tier_data.get("ttBuy", "0"))
-                    od_buy = _parse_float(tier_data.get("odBuy", "0"))
                     rates.append(
                         FxRate(
                             record_type="native",
@@ -86,7 +85,6 @@ class DbsScraper(BankScraper):
                             std_transaction_value=None,
                             tt_od_sell=tt_od_sell,
                             tt_buy=tt_buy,
-                            od_buy=od_buy,
                             mid_rate=compute_mid_rate(tt_od_sell, tt_buy),
                         )
                     )

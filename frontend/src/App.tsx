@@ -186,7 +186,7 @@ export default function App() {
             FX Margin Comparison
           </h1>
           <p className="mt-1 text-sm text-slate-400">
-            Compare DBS, OCBC, and UOB board spreads as margin % of mid.
+            Compare DBS, OCBC, UOB, and HSBC board spreads as margin % of mid.
             Lower is better for the customer.
           </p>
         </div>

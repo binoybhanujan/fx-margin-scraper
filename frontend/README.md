@@ -1,6 +1,6 @@
 # FX Margin Dashboard
 
-React dashboard to compare FX rates across banks (DBS, OCBC).
+React dashboard to compare FX rates across banks (DBS, OCBC, UOB, HSBC).
 
 ## Features
 

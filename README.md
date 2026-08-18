@@ -45,7 +45,7 @@ After a run:
 | File | Description |
 |------|-------------|
 | `data/raw/dbs/2026-08-15.csv` | DBS rates for that day |
-| `data/consolidated/latest.csv` | All banks — native + standardized bands, plus buy/sell/OD margin % of mid |
+| `data/consolidated/latest.csv` | All banks — native + standardized bands, plus buy/sell margin % of mid |
 
 ## Adding a new bank
 
@@ -77,3 +77,4 @@ Workflow: `.github/workflows/daily-scrape.yml` (also runnable from **Actions →
 | DBS  | ✅ Implemented | SGD &lt; 50, SGD 50 – 200 | 4 bands (see `std_bands.py`) |
 | OCBC | ✅ Implemented | SGD 0 – 39,999.99, SGD 40,000 – 100,000 | Same 4 standardized bands |
 | UOB  | ✅ Implemented | Single indicative board (no SGD amount tiers) | Same 4 bands (fallback to board) |
+| HSBC | ✅ Implemented | Single indicative board (HTML; no SGD amount tiers) | Same 4 bands (fallback to board) |

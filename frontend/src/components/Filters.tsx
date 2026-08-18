@@ -79,7 +79,6 @@ export function Filters({
         >
           <option value="tt_od_sell">Buy FCY (sell margin % of mid)</option>
           <option value="tt_buy">Sell FCY (buy margin % of mid)</option>
-          <option value="od_buy">Sell FCY OD (OD buy margin % of mid)</option>
         </select>
       </label>
     </div>

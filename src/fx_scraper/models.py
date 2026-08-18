@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-RATE_COLUMNS: list[str] = ["tt_od_sell", "tt_buy", "od_buy", "mid_rate"]
+RATE_COLUMNS: list[str] = ["tt_od_sell", "tt_buy", "mid_rate"]
 
 
 def compute_mid_rate(
@@ -49,7 +49,6 @@ class FxRate:
     std_transaction_value: str | None
     tt_od_sell: float | None
     tt_buy: float | None
-    od_buy: float | None
     mid_rate: float | None
 
 

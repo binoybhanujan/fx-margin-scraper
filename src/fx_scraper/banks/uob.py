@@ -56,7 +56,6 @@ class UobScraper(BankScraper):
             currency_pair = f"{base_currency}/{self.quote_currency}"
             tt_od_sell = _parse_float(entry.get("bankSell"))
             tt_buy = _parse_float(entry.get("bankBuy"))
-            od_buy = _parse_float(entry.get("bankBuyOD"))
             rates.append(
                 FxRate(
                     record_type="native",
@@ -72,7 +71,6 @@ class UobScraper(BankScraper):
                     std_transaction_value=None,
                     tt_od_sell=tt_od_sell,
                     tt_buy=tt_buy,
-                    od_buy=od_buy,
                     mid_rate=compute_mid_rate(tt_od_sell, tt_buy),
                 )
             )

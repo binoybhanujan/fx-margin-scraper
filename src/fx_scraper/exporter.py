@@ -27,11 +27,9 @@ CSV_FIELDNAMES = [
     "scraped_at",
     "tt_od_sell",
     "tt_buy",
-    "od_buy",
     "mid_rate",
     "sell_margin_pct",
     "buy_margin_pct",
-    "od_buy_margin_pct",
 ]
 
 
@@ -46,9 +44,6 @@ def _rate_row(rate: Any, snapshot: FxRatesSnapshot) -> dict[str, Any]:
     )
     row["buy_margin_pct"] = compute_margin_pct_of_mid(
         rate.tt_buy, mid, customer_buys_fcy=False
-    )
-    row["od_buy_margin_pct"] = compute_margin_pct_of_mid(
-        rate.od_buy, mid, customer_buys_fcy=False
     )
     return row
 

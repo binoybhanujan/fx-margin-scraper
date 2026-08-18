@@ -1,4 +1,4 @@
-export type RateType = "tt_od_sell" | "tt_buy" | "od_buy" | "mid_rate";
+export type RateType = "tt_od_sell" | "tt_buy";
 export type RecordType = "native" | "standardized";
 
 export interface FxRateRow {
@@ -18,11 +18,9 @@ export interface FxRateRow {
   scraped_at: string;
   tt_od_sell: number | null;
   tt_buy: number | null;
-  od_buy: number | null;
   mid_rate: number | null;
   sell_margin_pct: number | null;
   buy_margin_pct: number | null;
-  od_buy_margin_pct: number | null;
 }
 
 export interface ConsolidatedIndex {

@@ -89,7 +89,6 @@ class OcbcScraper(BankScraper):
                         std_transaction_value=None,
                         tt_od_sell=tt_od_sell,
                         tt_buy=tt_buy,
-                        od_buy=None,
                         mid_rate=compute_mid_rate(
                             tt_od_sell, tt_buy, published_mid=published_mid
                         ),
