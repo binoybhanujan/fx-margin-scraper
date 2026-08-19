@@ -21,7 +21,9 @@ DATA_DIR = REPO_ROOT / "data"
 class DashboardHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path: str) -> str:
         parsed = urlparse(path)
-        raw = unquote(parsed.path)
+        raw = posixpath.normpath(unquote(parsed.path))
+        if not raw.startswith("/"):
+            raw = "/" + raw
         if raw == "/repo-data" or raw.startswith("/repo-data/"):
             rel = raw[len("/repo-data") :].lstrip("/")
             candidate = (DATA_DIR / rel).resolve()
@@ -30,7 +32,7 @@ class DashboardHandler(SimpleHTTPRequestHandler):
                 return str(candidate)
             return str(data_root / "__missing__")
         # Serve frontend/ as the document root.
-        rel = posixpath.normpath(raw.lstrip("/"))
+        rel = raw.lstrip("/") or "."
         if rel == ".":
             return str(FRONTEND_DIR / "index.html")
         candidate = (FRONTEND_DIR / rel).resolve()
@@ -54,8 +56,8 @@ def main(argv: list[str] | None = None) -> int:
 
     handler = partial(DashboardHandler, directory=str(FRONTEND_DIR))
     server = ThreadingHTTPServer((args.host, args.port), handler)
-    print(f"Dashboard: http://{args.host}:{args.port}/")
-    print(f"Data:      http://{args.host}:{args.port}/repo-data/consolidated/")
+    print(f"Dashboard: http://{args.host}:{args.port}/", flush=True)
+    print(f"Data:      http://{args.host}:{args.port}/repo-data/consolidated/", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
