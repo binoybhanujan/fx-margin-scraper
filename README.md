@@ -20,7 +20,7 @@ fx-margin-scraper/
 ├── data/
 │   ├── raw/{bank}/          # Per-bank snapshots (gitignored)
 │   └── consolidated/        # Merged CSVs (committed; GitHub source of truth)
-├── frontend/                # React comparison dashboard
+├── frontend/                # Comparison dashboard (static HTML/JS, no build)
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -55,14 +55,14 @@ After a run:
 
 ## Dashboard (frontend)
 
-Compare bank rates side-by-side and view trends:
+Compare bank rates side-by-side and view trends. The UI is static HTML, CSS, and ES modules — no Vite, npm, or bundler.
 
 ```bash
-python scripts/scrape.py          # ensure data/ is populated
-cd frontend && npm install && npm run dev
+python scripts/scrape.py              # ensure data/ is populated
+python scripts/serve_dashboard.py     # http://127.0.0.1:5173
 ```
 
-Open http://localhost:5173 — see [frontend/README.md](frontend/README.md).
+See [frontend/README.md](frontend/README.md).
 
 ## Daily scheduling
 

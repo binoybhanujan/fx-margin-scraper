@@ -5,7 +5,7 @@ alwaysApply: true
 
 # FX margin scraper
 
-Python scraper plus a Vite React dashboard.
+Python scraper plus a static HTML/JS dashboard (no Vite or other build tools).
 
 ## Understand Before You Change
 
@@ -23,7 +23,7 @@ Python scraper plus a Vite React dashboard.
 - Scrapers live in `src/fx_scraper/banks/`. Register new banks in `src/fx_scraper/banks/__init__.py`.
 - Shared models: `src/fx_scraper/models.py`. CSV export: `src/fx_scraper/exporter.py`.
 - Standardized SGD bands: `src/fx_scraper/std_bands.py`.
-- Dashboard: `frontend/`. Data layer: `frontend/src/lib/` (do not rely on git ignoring `lib/`; `.gitignore` must keep `frontend/src/lib/` tracked).
+- Dashboard: `frontend/` (HTML, CSS, ES modules). Data layer: `frontend/src/lib/` (do not rely on git ignoring `lib/`; `.gitignore` must keep `frontend/src/lib/` tracked). Serve with `python scripts/serve_dashboard.py`.
 - Run scrape with `python scripts/scrape.py`. Do not commit `data/raw/` or secrets.
 
 ## Scraping
@@ -38,7 +38,7 @@ Python scraper plus a Vite React dashboard.
 - Compare using `record_type === "standardized"` only.
 - Show SGD per 1 FCY (`rate / unit`). Group table rows by currency pair + standardized band, not by `unit`.
 - Order transaction bands by numeric SGD value (low to high).
-- Date filter loads `data/consolidated/{date}.csv` via `/repo-data` in dev (or `VITE_DATA_BASE_URL` in prod).
+- Date filter loads `data/consolidated/{date}.csv` via `/repo-data` when using `scripts/serve_dashboard.py` (or `window.FX_DATA_BASE_URL` in `frontend/config.js` on a static host).
 
 ## Git
 
@@ -56,7 +56,7 @@ Python scraper plus a Vite React dashboard.
 
 ## Preserve the Application Architecture
 
-- Treat this repo as two layers connected by files: Python collectors write CSV/JSON; the Vite React app only reads those files. Do not introduce an API server, database, or browser-to-bank calls unless the user explicitly asks.
+- Treat this repo as two layers connected by files: Python collectors write CSV/JSON; the dashboard only reads those files in the browser. Do not introduce an API server, database, or browser-to-bank calls unless the user explicitly asks.
 - Keep the existing pipeline: bank scrapers → shared `FxRate` / snapshot model → optional standardized rows in the exporter → `data/raw` and `data/consolidated` (including dated CSV + `index.json`).
 - New banks belong in `src/fx_scraper/banks/` and must be registered in `SCRAPERS`. Do not add one-off scrape scripts or a second export format.
 - The dashboard must keep using the CSV contract (`record_type`, standardized bands, `unit` for normalization only). Do not move comparison logic into the scrapers or duplicate CSV parsing outside `frontend/src/lib/`.

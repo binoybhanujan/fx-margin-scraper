@@ -1,18 +1,17 @@
-import Papa from "papaparse";
-import type { ConsolidatedIndex, FxRateRow, RecordType } from "./types";
-import { getDataBaseUrl } from "./normalize";
+import { parseCsv } from "./parseCsv.js";
+import { getDataBaseUrl } from "./normalize.js";
 
-function parseNumber(value: string | undefined): number | null {
+function parseNumber(value) {
   if (!value || value.trim() === "") return null;
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
 }
 
-function parseRecordType(value: string | undefined): RecordType {
+function parseRecordType(value) {
   return value === "standardized" ? "standardized" : "native";
 }
 
-function parseRow(raw: Record<string, string>): FxRateRow {
+function parseRow(raw) {
   const stdTransactionValue = raw.std_transaction_value?.trim();
   const stdAmountTier = raw.std_amount_tier?.trim();
   return {
@@ -38,7 +37,7 @@ function parseRow(raw: Record<string, string>): FxRateRow {
   };
 }
 
-export async function fetchCsv(filename: string): Promise<FxRateRow[]> {
+export async function fetchCsv(filename) {
   const base = getDataBaseUrl();
   const url = `${base}/${filename}`;
   const response = await fetch(url);
@@ -46,17 +45,10 @@ export async function fetchCsv(filename: string): Promise<FxRateRow[]> {
     throw new Error(`Failed to load ${url} (${response.status})`);
   }
   const text = await response.text();
-  const parsed = Papa.parse<Record<string, string>>(text, {
-    header: true,
-    skipEmptyLines: true,
-  });
-  if (parsed.errors.length > 0) {
-    console.warn("CSV parse warnings:", parsed.errors);
-  }
-  return parsed.data.map(parseRow);
+  return parseCsv(text).map(parseRow);
 }
 
-export async function fetchIndex(): Promise<ConsolidatedIndex> {
+export async function fetchIndex() {
   const base = getDataBaseUrl();
   const url = `${base}/index.json`;
   try {
@@ -64,16 +56,14 @@ export async function fetchIndex(): Promise<ConsolidatedIndex> {
     if (!response.ok) {
       return { latest: "latest.csv", dates: [] };
     }
-    return (await response.json()) as ConsolidatedIndex;
+    return await response.json();
   } catch {
     return { latest: "latest.csv", dates: [] };
   }
 }
 
-export async function loadHistoricalRates(
-  dates: string[],
-): Promise<Map<string, FxRateRow[]>> {
-  const byDate = new Map<string, FxRateRow[]>();
+export async function loadHistoricalRates(dates) {
+  const byDate = new Map();
   for (const date of dates) {
     try {
       byDate.set(date, await fetchCsv(`${date}.csv`));

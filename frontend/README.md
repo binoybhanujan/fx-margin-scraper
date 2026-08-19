@@ -1,6 +1,6 @@
 # FX Margin Dashboard
 
-React dashboard to compare FX rates across banks (DBS, OCBC, UOB, HSBC).
+Browser-native comparison dashboard (HTML, CSS, ES modules). No Vite, npm, or other build step.
 
 ## Features
 
@@ -15,41 +15,28 @@ From the **repository root**, ensure scraped data exists:
 
 ```bash
 python scripts/scrape.py
+python scripts/serve_dashboard.py
 ```
 
-Then in `frontend/`:
+Open http://127.0.0.1:5173
 
-```bash
-npm install
-npm run dev
-```
-
-Open http://localhost:5173
-
-The Vite dev server serves CSV/JSON from `../data` at `/repo-data/`.
+The Python server serves `frontend/` at `/` and `data/` at `/repo-data/`.
 
 ## Production data URL
 
-Consolidated CSVs on `main` are the source of truth. For a deployed dashboard, set:
+Consolidated CSVs on `main` are the source of truth. For a dashboard that cannot use `/repo-data`, set `window.FX_DATA_BASE_URL` in `frontend/config.js`:
 
-```bash
-# frontend/.env.production
-VITE_DATA_BASE_URL=https://raw.githubusercontent.com/binoybhanujan/fx-margin-scraper/main/data/consolidated
+```javascript
+window.FX_DATA_BASE_URL =
+  "https://raw.githubusercontent.com/binoybhanujan/fx-margin-scraper/main/data/consolidated";
 ```
 
-## Build
-
-```bash
-npm run build
-npm run preview
-```
-
-Deploy `dist/` to Vercel, Netlify, or GitHub Pages.
+Then host the `frontend/` folder as static files (any HTTP server or GitHub Pages). The browser loads ES modules directly; there is no `dist/` build.
 
 ## Data files used
 
 | File | Purpose |
 |------|---------|
-| `latest.csv` | Current comparison table |
-| `index.json` | List of dated CSVs for trends |
+| `latest.csv` | Fallback snapshot when `index.json` has no dates |
+| `index.json` | List of dated CSVs for the date filter and trends |
 | `{date}.csv` | Historical snapshots |
