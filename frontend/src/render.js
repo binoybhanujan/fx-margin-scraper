@@ -1,5 +1,16 @@
 import { formatRate } from "./lib/normalize.js";
-import { renderTrendChart } from "./chart.js";
+import {
+  formatBank,
+  formatMargin,
+  formatPp,
+  HSBC_BANK,
+} from "./lib/insights.js";
+import {
+  renderHeadroomBars,
+  renderPeerMedianChart,
+  renderRankChart,
+  renderTrendChart,
+} from "./chart.js";
 
 function selectOptions(select, values, selected, extraFirst) {
   select.replaceChildren();
@@ -16,6 +27,42 @@ function selectOptions(select, values, selected, extraFirst) {
     select.append(opt);
   }
   select.value = selected;
+}
+
+function emptyMessage(text) {
+  const p = document.createElement("p");
+  p.className = "muted compact-empty";
+  p.textContent = text;
+  return p;
+}
+
+function insightTable(headers, rows) {
+  if (rows.length === 0) {
+    return emptyMessage("No currencies match this view for the insight band.");
+  }
+  const table = document.createElement("table");
+  table.className = "compact-table";
+  const thead = document.createElement("thead");
+  const hr = document.createElement("tr");
+  for (const h of headers) {
+    const th = document.createElement("th");
+    th.textContent = h;
+    hr.append(th);
+  }
+  thead.append(hr);
+  const tbody = document.createElement("tbody");
+  for (const cells of rows) {
+    const tr = document.createElement("tr");
+    for (const cell of cells) {
+      const td = document.createElement("td");
+      td.className = cell.className ?? "";
+      td.textContent = cell.text;
+      tr.append(td);
+    }
+    tbody.append(tr);
+  }
+  table.append(thead, tbody);
+  return table;
 }
 
 export function bindFilters(root, handlers) {
@@ -90,6 +137,153 @@ export function renderStatus(root, { loading, error, hasRows, hasDates }) {
   tableLoading.hidden = !loading;
 }
 
+export function renderKpis(root, insights) {
+  const bandEl = root.querySelector("#insight-band-label");
+  const grid = root.querySelector("#kpi-grid");
+  if (!insights) {
+    bandEl.textContent = "";
+    const blurb = root.querySelector("#exec-blurb");
+    if (blurb) blurb.textContent = "";
+    grid.replaceChildren();
+    return;
+  }
+  bandEl.textContent = `Insight band: ${insights.band}`;
+  const blurb = root.querySelector("#exec-blurb");
+  if (blurb) {
+    const rank =
+      insights.kpis.medianRank == null
+        ? "—"
+        : insights.kpis.medianRank.toFixed(1);
+    blurb.textContent =
+      `HSBC quotes ${insights.kpis.quoted} currencies. Cheapest on ` +
+      `${insights.kpis.cheapestCount}, most expensive on ` +
+      `${insights.kpis.mostExpensiveCount}. Median rank ${rank}. ` +
+      `Median gap vs cheapest peer ${formatPp(insights.kpis.medianGapVsCheapest)}.`;
+  }
+  const cards = [
+    { label: "HSBC quotes", value: String(insights.kpis.quoted) },
+    {
+      label: "HSBC cheapest",
+      value: String(insights.kpis.cheapestCount),
+    },
+    {
+      label: "HSBC most expensive",
+      value: String(insights.kpis.mostExpensiveCount),
+    },
+    {
+      label: "Median HSBC rank",
+      value:
+        insights.kpis.medianRank == null
+          ? "—"
+          : insights.kpis.medianRank.toFixed(1),
+    },
+    {
+      label: "Median gap vs cheapest",
+      value: formatPp(insights.kpis.medianGapVsCheapest),
+    },
+  ];
+  grid.replaceChildren();
+  for (const card of cards) {
+    const div = document.createElement("div");
+    div.className = "kpi-card";
+    const label = document.createElement("p");
+    label.className = "kpi-label";
+    label.textContent = card.label;
+    const value = document.createElement("p");
+    value.className = "kpi-value";
+    value.textContent = card.value;
+    div.append(label, value);
+    grid.append(div);
+  }
+}
+
+export function renderInsightLists(root, insights) {
+  const widen = root.querySelector("#widen-table");
+  const pressure = root.querySelector("#pressure-table");
+  const marketCheap = root.querySelector("#market-cheap-table");
+  const marketDear = root.querySelector("#market-dear-table");
+  const hsbcCheap = root.querySelector("#hsbc-cheap-table");
+  const hsbcDear = root.querySelector("#hsbc-dear-table");
+
+  if (!insights) {
+    for (const el of [widen, pressure, marketCheap, marketDear, hsbcCheap, hsbcDear]) {
+      el.replaceChildren();
+    }
+    return;
+  }
+
+  widen.replaceChildren(
+    insightTable(
+      ["Pair", "HSBC", "Peer median", "Headroom", "Cheapest peer"],
+      insights.widen.slice(0, 3).map((r) => [
+        { text: r.currency_pair, className: "cell-strong" },
+        { text: formatMargin(r.hsbcMargin), className: "tabular" },
+        { text: formatMargin(r.peerMedian), className: "tabular" },
+        { text: formatPp(r.headroom), className: "tabular" },
+        {
+          text: `${formatBank(r.cheapestPeerBank)} ${formatMargin(r.cheapestPeerMargin)}`,
+        },
+      ]),
+    ),
+  );
+
+  pressure.replaceChildren(
+    insightTable(
+      ["Pair", "HSBC", "Gap vs cheapest", "Cheapest bank"],
+      insights.pressure.slice(0, 3).map((r) => [
+        { text: r.currency_pair, className: "cell-strong" },
+        { text: formatMargin(r.hsbcMargin), className: "tabular" },
+        { text: formatPp(r.gapVsCheapest), className: "tabular" },
+        { text: formatBank(r.cheapestBank) },
+      ]),
+    ),
+  );
+
+  marketCheap.replaceChildren(
+    insightTable(
+      ["Pair", "Market median", "Cheapest bank"],
+      insights.marketCheapest.slice(0, 3).map((r) => [
+        { text: r.currency_pair, className: "cell-strong" },
+        { text: formatMargin(r.marketMedian), className: "tabular" },
+        { text: formatBank(r.cheapestBank) },
+      ]),
+    ),
+  );
+
+  marketDear.replaceChildren(
+    insightTable(
+      ["Pair", "Market median", "Widest bank"],
+      insights.marketDearest.slice(0, 3).map((r) => [
+        { text: r.currency_pair, className: "cell-strong" },
+        { text: formatMargin(r.marketMedian), className: "tabular" },
+        { text: formatBank(r.widestBank) },
+      ]),
+    ),
+  );
+
+  hsbcCheap.replaceChildren(
+    insightTable(
+      ["Pair", "HSBC margin", "Rank"],
+      insights.hsbcCheapest.slice(0, 3).map((r) => [
+        { text: r.currency_pair, className: "cell-strong" },
+        { text: formatMargin(r.hsbcMargin), className: "tabular" },
+        { text: String(r.rank) },
+      ]),
+    ),
+  );
+
+  hsbcDear.replaceChildren(
+    insightTable(
+      ["Pair", "HSBC margin", "Rank"],
+      insights.hsbcDearest.slice(0, 3).map((r) => [
+        { text: r.currency_pair, className: "cell-strong" },
+        { text: formatMargin(r.hsbcMargin), className: "tabular" },
+        { text: String(r.rank) },
+      ]),
+    ),
+  );
+}
+
 export function renderTable(root, { rows, banks, loading }) {
   const empty = root.querySelector("#table-empty");
   const wrap = root.querySelector("#table-wrap");
@@ -117,6 +311,7 @@ export function renderTable(root, { rows, banks, loading }) {
   for (const bank of banks) {
     const th = document.createElement("th");
     th.textContent = bank;
+    if (bank === HSBC_BANK) th.className = "hsbc-col";
     const hint = document.createElement("span");
     hint.className = "th-hint";
     hint.textContent = "Margin % of mid";
@@ -124,7 +319,7 @@ export function renderTable(root, { rows, banks, loading }) {
     headerRow.append(th);
   }
   const bestTh = document.createElement("th");
-  bestTh.textContent = "Best";
+  bestTh.textContent = "Best for customer";
   headerRow.append(bestTh);
   thead.replaceChildren(headerRow);
 
@@ -143,7 +338,10 @@ export function renderTable(root, { rows, banks, loading }) {
       const cell = row.banks[bank];
       const isBest = row.bestBank === bank && cell?.normalizedRate != null;
       const td = document.createElement("td");
-      td.className = isBest ? "tabular best-cell" : "tabular";
+      const classes = ["tabular"];
+      if (isBest) classes.push("best-cell");
+      if (bank === HSBC_BANK) classes.push("hsbc-col");
+      td.className = classes.join(" ");
       td.textContent = formatRate(cell?.normalizedRate ?? null);
       tr.append(td);
     }
@@ -157,4 +355,19 @@ export function renderTable(root, { rows, banks, loading }) {
 
 export function renderChart(root, props) {
   renderTrendChart(root.querySelector("#trend-chart"), props);
+}
+
+export function renderTrendExtras(root, { peerSeries, insights, trendPair, rateLabel, insightBand }) {
+  renderPeerMedianChart(root.querySelector("#peer-median-chart"), {
+    series: peerSeries,
+    caption: `${trendPair} — HSBC vs peer median (${rateLabel})`,
+  });
+  renderRankChart(root.querySelector("#rank-chart"), {
+    series: peerSeries,
+    caption: `${trendPair} — HSBC rank over time`,
+  });
+  renderHeadroomBars(root.querySelector("#headroom-chart"), {
+    rows: insights?.headroomBars ?? [],
+    caption: `Headroom by currency — ${insightBand ?? ""}`,
+  });
 }

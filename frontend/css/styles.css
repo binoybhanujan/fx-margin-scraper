@@ -1,15 +1,17 @@
 :root {
-  color-scheme: dark;
-  --bg: #020617;
-  --panel: rgba(15, 23, 42, 0.5);
-  --border: #1e293b;
-  --text: #f1f5f9;
-  --muted: #94a3b8;
-  --muted-2: #64748b;
-  --accent: #34d399;
-  --danger-bg: rgba(69, 10, 10, 0.5);
-  --danger-border: #7f1d1d;
-  --danger-text: #fca5a5;
+  color-scheme: light;
+  --hsbc-red: #db0011;
+  --bg: #ffffff;
+  --panel: #f6f6f6;
+  --border: #d7d8d6;
+  --text: #1d1d1b;
+  --muted: #5c5c5c;
+  --muted-2: #8a8d8f;
+  --accent: #db0011;
+  --hsbc-tint: #fff5f5;
+  --danger-bg: #fde8e8;
+  --danger-border: #db0011;
+  --danger-text: #6b0008;
 }
 
 * {
@@ -23,15 +25,67 @@ body {
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 
 .page-header {
+  background: #ffffff;
+  color: #333333;
+  border-top: 6px solid var(--hsbc-red);
   border-bottom: 1px solid var(--border);
-  background: var(--panel);
+}
+
+.header-inner {
+  padding-top: 1.75rem;
+  padding-bottom: 1.75rem;
+}
+
+.header-copy {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.page-header h1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
+  color: #333333;
+}
+
+.page-header .brand {
+  color: var(--hsbc-red);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.page-header .title-rule {
+  display: inline-block;
+  width: 1px;
+  height: 1.15em;
+  background: #333333;
+  flex-shrink: 0;
+}
+
+.page-header .product-title {
+  color: #333333;
+  font-weight: 700;
+}
+
+.page-header .lede {
+  margin: 0.45rem 0 0;
+  max-width: none;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #666666;
 }
 
 .wrap {
@@ -45,44 +99,129 @@ main.wrap {
   padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
 h2 {
   margin: 0;
   font-size: 1.125rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .lede,
 .muted,
-.th-hint {
+.th-hint,
+.section-note,
+.disclaimer,
+.insight-band {
   color: var(--muted);
 }
 
 .lede {
-  margin: 0.25rem 0 0;
+  margin: 0.35rem 0 0;
   font-size: 0.875rem;
+  max-width: 42rem;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.section-note {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.disclaimer {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  max-width: 52rem;
 }
 
 .section.panel {
   border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.3);
-  border-radius: 0.75rem;
+  background: var(--panel);
   padding: 1rem;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  padding: 1.15rem 1.2rem 1.25rem;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.tile-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 3px solid var(--hsbc-red);
+}
+
+.tile-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hsbc-red);
+}
+
+.tile-header h2 {
+  flex: 1 1 auto;
+}
+
+.exec-blurb {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.table-label {
+  margin: 0.6rem 0 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stacked-table {
+  margin-top: 0.35rem;
+}
+
+.chart-grid-2 {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 900px) {
+  .chart-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .filter-grid {
@@ -100,6 +239,55 @@ h2 {
   .filter-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  .filter-grid.filter-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.kpi-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 900px) {
+  .kpi-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.kpi-card {
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--hsbc-red);
+  background: var(--panel);
+  padding: 0.85rem 0.9rem;
+}
+
+.kpi-label {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.kpi-value {
+  margin: 0.35rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.lists-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .lists-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 label.field {
@@ -110,12 +298,17 @@ label.field {
 }
 
 select {
-  border-radius: 0.5rem;
-  border: 1px solid #334155;
-  background: #0f172a;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background: #ffffff;
   color: var(--text);
   padding: 0.5rem 0.75rem;
   font: inherit;
+}
+
+select:focus {
+  outline: 2px solid var(--hsbc-red);
+  outline-offset: 1px;
 }
 
 .meta-row {
@@ -128,14 +321,17 @@ select {
 
 .bank-name {
   text-transform: capitalize;
-  font-weight: 500;
-  color: var(--muted);
+  font-weight: 600;
+  color: var(--text);
 }
 
 .table-scroll {
   overflow-x: auto;
-  border-radius: 0.75rem;
   border: 1px solid var(--border);
+}
+
+.table-scroll.compact {
+  min-height: 4rem;
 }
 
 table {
@@ -145,9 +341,14 @@ table {
   font-size: 0.875rem;
 }
 
+.compact-table {
+  min-width: 0;
+  width: 100%;
+}
+
 thead {
-  background: rgba(15, 23, 42, 0.8);
-  color: var(--muted);
+  background: #000000;
+  color: #ffffff;
 }
 
 th,
@@ -159,14 +360,15 @@ td {
 th {
   font-weight: 600;
   text-transform: capitalize;
+  border-bottom: 2px solid var(--hsbc-red);
 }
 
 .th-hint {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 400;
   text-transform: none;
-  color: var(--muted-2);
+  color: #d7d8d6;
 }
 
 tbody tr {
@@ -174,19 +376,23 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--panel);
 }
 
 .cell-strong {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
+.hsbc-col {
+  background: var(--hsbc-tint);
+}
+
 .best-cell {
-  color: var(--accent);
+  color: var(--hsbc-red);
   font-weight: 600;
   text-transform: capitalize;
 }
@@ -195,14 +401,39 @@ tbody tr:hover {
   text-align: center;
 }
 
+.compact-empty,
 .chart-empty {
-  padding: 3rem 0;
+  padding: 1.5rem 0.75rem;
   font-size: 0.875rem;
 }
 
-.chart-caption {
-  margin: 0 0 0.5rem;
-  font-size: 0.875rem;
+.chart-empty {
+  padding: 3rem 0;
+}
+
+.chart-subhead {
+  margin: 1.25rem 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.chart-zeroline {
+  stroke: #1d1d1b;
+  stroke-width: 1;
+}
+
+.bar-widen {
+  fill: #8a8d8f;
+}
+
+.bar-pressure {
+  fill: #db0011;
+}
+
+.chart-svg-wrap-bars {
+  height: auto;
+  max-height: 40rem;
+  overflow: auto;
 }
 
 .chart-svg-wrap {
@@ -216,12 +447,12 @@ tbody tr:hover {
 }
 
 .chart-grid {
-  stroke: #334155;
+  stroke: var(--border);
   stroke-dasharray: 3 3;
 }
 
 .chart-axis {
-  fill: #94a3b8;
+  fill: var(--muted);
   font-size: 12px;
 }
 
@@ -231,6 +462,7 @@ tbody tr:hover {
   gap: 1rem;
   font-size: 0.8rem;
   color: var(--muted);
+  margin-top: 0.75rem;
 }
 
 .chart-legend-item {
@@ -242,7 +474,6 @@ tbody tr:hover {
 .chart-legend-item i {
   width: 0.75rem;
   height: 0.75rem;
-  border-radius: 999px;
   display: inline-block;
 }
 
@@ -254,7 +485,6 @@ tbody tr:hover {
 }
 
 .error {
-  border-radius: 0.5rem;
   border: 1px solid var(--danger-border);
   background: var(--danger-bg);
   color: var(--danger-text);
@@ -268,6 +498,8 @@ tbody tr:hover {
 }
 
 code {
-  color: #e2e8f0;
+  color: var(--text);
+  background: var(--panel);
+  padding: 0.05rem 0.25rem;
   font-size: 0.85em;
 }

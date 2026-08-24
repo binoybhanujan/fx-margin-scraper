@@ -3,18 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FX Margin Scraper — Rate Comparison</title>
+    <title>HSBC FX Margin Intelligence</title>
     <link rel="stylesheet" href="./css/styles.css" />
     <script src="./config.js"></script>
   </head>
   <body>
     <header class="page-header">
-      <div class="wrap">
-        <h1>FX Margin Comparison</h1>
-        <p class="lede">
-          Compare DBS, OCBC, UOB, and HSBC board spreads as margin % of mid.
-          Lower is better for the customer.
-        </p>
+      <div class="wrap header-inner">
+        <div class="header-copy">
+          <h1>
+            <span class="brand" aria-label="HSBC">HSBC</span>
+            <span class="title-rule" aria-hidden="true"></span>
+            <span class="product-title">FX Pricing Market Position</span>
+          </h1>
+          <p class="lede">
+            Executive template: Where is HSBC positioned and where are the
+            largest pricing gaps?
+          </p>
+        </div>
       </div>
     </header>
 
@@ -30,20 +36,16 @@
       </div>
 
       <div id="dashboard-content" hidden>
-        <section class="section">
-          <h2>Filters</h2>
-          <div class="filter-grid">
+        <section class="tile" aria-labelledby="tile-exec">
+          <header class="tile-header">
+            <p class="tile-kicker">View 1</p>
+            <h2 id="tile-exec">Executive summary</h2>
+            <p id="insight-band-label" class="muted insight-band"></p>
+          </header>
+          <div class="filter-grid filter-grid-2">
             <label class="field">
               <span class="muted">Date</span>
               <select id="filter-date"></select>
-            </label>
-            <label class="field">
-              <span class="muted">Currency</span>
-              <select id="filter-currency"></select>
-            </label>
-            <label class="field">
-              <span class="muted">Standardized band</span>
-              <select id="filter-band"></select>
             </label>
             <label class="field">
               <span class="muted">Margin type</span>
@@ -53,11 +55,115 @@
               </select>
             </label>
           </div>
-          <div id="bank-updated" class="meta-row"></div>
+          <p id="exec-blurb" class="exec-blurb"></p>
+          <div id="kpi-grid" class="kpi-grid"></div>
+          <div class="lists-grid exec-highlights">
+            <div>
+              <h3>Largest headroom</h3>
+              <p class="muted section-note">Top 3 where HSBC is cheaper than the peer median.</p>
+              <div id="widen-table" class="table-scroll compact"></div>
+            </div>
+            <div>
+              <h3>Tightest pressure</h3>
+              <p class="muted section-note">Top 3 where HSBC is widest or above the peer median.</p>
+              <div id="pressure-table" class="table-scroll compact"></div>
+            </div>
+            <div>
+              <h3>Market cheapest / dearest</h3>
+              <p class="muted section-note">Median of all quoting banks.</p>
+              <p class="table-label">Cheapest</p>
+              <div id="market-cheap-table" class="table-scroll compact"></div>
+              <p class="table-label">Most expensive</p>
+              <div id="market-dear-table" class="table-scroll compact stacked-table"></div>
+            </div>
+            <div>
+              <h3>HSBC book cheapest / dearest</h3>
+              <p class="muted section-note">HSBC’s own margin.</p>
+              <p class="table-label">Cheapest</p>
+              <div id="hsbc-cheap-table" class="table-scroll compact"></div>
+              <p class="table-label">Most expensive</p>
+              <div id="hsbc-dear-table" class="table-scroll compact stacked-table"></div>
+            </div>
+          </div>
+          <p class="disclaimer">
+            All currencies on the insight band (default SGD 50 – 200 when the
+            table band is All). HSBC’s single indicative board is copied across
+            standardized bands. Mid is published or buy/sell average. Missing
+            quotes are not inferred. Not a pricing recommendation.
+          </p>
         </section>
 
-        <section class="section">
-          <h2>Bank comparison</h2>
+        <section class="tile" aria-labelledby="tile-competitors">
+          <header class="tile-header">
+            <p class="tile-kicker">View 2</p>
+            <h2 id="tile-competitors">Competitor margin trends</h2>
+          </header>
+          <div class="trend-head">
+            <p class="muted section-note">
+              HSBC (red) vs DBS, OCBC, and UOB for the selected currency and
+              insight band.
+            </p>
+            <label class="field">
+              <span class="muted">Trend currency</span>
+              <select id="trend-currency"></select>
+            </label>
+          </div>
+          <div id="trend-chart"></div>
+        </section>
+
+        <section class="tile" aria-labelledby="tile-market">
+          <header class="tile-header">
+            <p class="tile-kicker">View 3</p>
+            <h2 id="tile-market">HSBC vs the market</h2>
+          </header>
+          <p class="muted section-note">
+            Same currency and insight band as competitor trends. Rank 1 is
+            cheapest for the customer.
+          </p>
+          <div class="chart-grid-2">
+            <div>
+              <h3 class="chart-subhead">HSBC vs peer median</h3>
+              <div id="peer-median-chart"></div>
+            </div>
+            <div>
+              <h3 class="chart-subhead">HSBC rank over time</h3>
+              <div id="rank-chart"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tile" aria-labelledby="tile-headroom">
+          <header class="tile-header">
+            <p class="tile-kicker">View 4</p>
+            <h2 id="tile-headroom">Headroom by currency</h2>
+          </header>
+          <p class="muted section-note">
+            Peer median minus HSBC on the selected date. Grey = cheaper than
+            typical peer (room to widen). Red = already wider than typical.
+          </p>
+          <div id="headroom-chart"></div>
+        </section>
+
+        <section class="tile" aria-labelledby="tile-table">
+          <header class="tile-header">
+            <p class="tile-kicker">View 5</p>
+            <h2 id="tile-table">Bank comparison</h2>
+          </header>
+          <p class="muted section-note">
+            Detail of every quoting bank. Currency and band apply only to this
+            table.
+          </p>
+          <div class="filter-grid filter-grid-2">
+            <label class="field">
+              <span class="muted">Currency</span>
+              <select id="filter-currency"></select>
+            </label>
+            <label class="field">
+              <span class="muted">Standardized band</span>
+              <select id="filter-band"></select>
+            </label>
+          </div>
+          <div id="bank-updated" class="meta-row"></div>
           <p id="table-loading" class="muted">Loading rates…</p>
           <p id="table-empty" class="muted center chart-empty" hidden>
             No margins match the selected filters.
@@ -68,17 +174,6 @@
               <tbody></tbody>
             </table>
           </div>
-        </section>
-
-        <section class="section panel">
-          <div class="trend-head">
-            <h2>Margin trends</h2>
-            <label class="field">
-              <span class="muted">Trend currency</span>
-              <select id="trend-currency"></select>
-            </label>
-          </div>
-          <div id="trend-chart"></div>
         </section>
       </div>
     </main>

@@ -5,15 +5,24 @@ import {
   uniqueBanks,
   uniqueTransactionValues,
 } from "./lib/compare.js";
+import {
+  banksHsbcFirst,
+  buildHsbcInsights,
+  buildHsbcTimeSeries,
+  resolveInsightBand,
+} from "./lib/insights.js";
 import { fetchCsv, fetchIndex, loadHistoricalRates } from "./lib/loadRates.js";
 import { getRateValue, getTransactionBand, rateTypeLabel } from "./lib/normalize.js";
 import {
   bindFilters,
   renderChart,
   renderFilters,
+  renderInsightLists,
+  renderKpis,
   renderMeta,
   renderStatus,
   renderTable,
+  renderTrendExtras,
 } from "./render.js";
 
 const state = {
@@ -27,13 +36,14 @@ const state = {
   rateType: "tt_od_sell",
   trendCurrency: "USD",
   trendPoints: [],
+  peerSeries: [],
 };
 
 let cancelledIndex = false;
 let cancelledSnapshot = false;
 
 function derived() {
-  const banks = uniqueBanks(state.snapshotRows);
+  const banks = banksHsbcFirst(uniqueBanks(state.snapshotRows));
   const currencies = uniqueBaseCurrencies(state.snapshotRows, state.rateType);
   const transactionValues = uniqueTransactionValues(state.snapshotRows);
   const comparisonRows = buildComparisonRows(
@@ -42,13 +52,36 @@ function derived() {
     state.baseCurrency,
     state.transactionValue,
   );
+  const insightBand = resolveInsightBand(
+    state.transactionValue,
+    transactionValues,
+  );
+  const insightSourceRows = insightBand
+    ? buildComparisonRows(
+        state.snapshotRows,
+        state.rateType,
+        "all",
+        insightBand,
+      )
+    : [];
+  const insights = insightBand
+    ? buildHsbcInsights(insightSourceRows, insightBand)
+    : null;
   const lastUpdated = {};
   for (const row of state.snapshotRows) {
     if (!lastUpdated[row.bank] || row.last_updated > lastUpdated[row.bank]) {
       lastUpdated[row.bank] = row.last_updated;
     }
   }
-  return { banks, currencies, transactionValues, comparisonRows, lastUpdated };
+  return {
+    banks,
+    currencies,
+    transactionValues,
+    comparisonRows,
+    insights,
+    lastUpdated,
+    insightBand,
+  };
 }
 
 function paint() {
@@ -77,10 +110,19 @@ function paint() {
     trendCurrency: state.trendCurrency,
   });
   renderMeta(root, { banks: d.banks, lastUpdated: d.lastUpdated });
+  renderKpis(root, d.insights);
+  renderInsightLists(root, d.insights);
   renderTable(root, {
     rows: d.comparisonRows,
     banks: d.banks,
     loading: state.loading,
+  });
+  renderTrendExtras(root, {
+    peerSeries: state.peerSeries,
+    insights: d.insights,
+    trendPair: `${state.trendCurrency}/SGD`,
+    rateLabel: rateTypeLabel(state.rateType),
+    insightBand: d.insightBand,
   });
   renderChart(root, {
     data: state.trendPoints,
@@ -160,6 +202,7 @@ async function loadSnapshot() {
 async function loadTrend() {
   if (state.historyDates.length === 0) {
     state.trendPoints = [];
+    state.peerSeries = [];
     paint();
     return;
   }
@@ -167,17 +210,25 @@ async function loadTrend() {
   loadTrend.token = token;
   const historical = await loadHistoricalRates(state.historyDates);
   if (loadTrend.token !== token) return;
+  const transactionValues =
+    uniqueTransactionValues(state.snapshotRows).length > 0
+      ? uniqueTransactionValues(state.snapshotRows)
+      : uniqueTransactionValues(
+          [...historical.values()].find((rows) => rows.length > 0) ?? [],
+        );
+  const insightBand = resolveInsightBand(
+    state.transactionValue,
+    transactionValues,
+  );
   const points = [];
   for (const [date, rows] of historical) {
     const seen = new Set();
     for (const row of filterStandardizedRows(rows)) {
       if (row.base_currency !== state.trendCurrency) continue;
       const band = getTransactionBand(row);
-      if (state.transactionValue !== "all" && band !== state.transactionValue) {
-        continue;
-      }
+      if (insightBand && band !== insightBand) continue;
       const dedupeKey = `${date}|${row.bank}`;
-      if (state.transactionValue === "all" && seen.has(dedupeKey)) continue;
+      if (seen.has(dedupeKey)) continue;
       const marginPct = getRateValue(row, state.rateType);
       if (marginPct == null) continue;
       seen.add(dedupeKey);
@@ -185,6 +236,14 @@ async function loadTrend() {
     }
   }
   state.trendPoints = points;
+  state.peerSeries = insightBand
+    ? buildHsbcTimeSeries(
+        historical,
+        state.rateType,
+        state.trendCurrency,
+        insightBand,
+      )
+    : [];
   paint();
 }
 

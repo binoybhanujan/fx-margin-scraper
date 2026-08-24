@@ -55,7 +55,7 @@ After a run:
 
 ## Dashboard (frontend)
 
-Compare bank rates side-by-side and view trends. The UI is static HTML, CSS, and ES modules — no Vite, npm, or bundler.
+Compare bank rates side-by-side and view HSBC’s position versus peers. The UI is static HTML, CSS, and ES modules — no Vite, npm, or bundler.
 
 ```bash
 python scripts/scrape.py              # ensure data/ is populated
