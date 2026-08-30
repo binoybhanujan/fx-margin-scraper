@@ -87,7 +87,7 @@ export function resolveInsightBand(selectedBand, availableBands) {
 export function formatPp(value) {
   if (value == null) return "—";
   const sign = value > 0 ? "+" : "";
-  return `${sign}${value.toFixed(3)} pp`;
+  return `${sign}${value.toFixed(2)} pp`;
 }
 
 export function formatBank(bank) {

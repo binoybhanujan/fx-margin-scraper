@@ -311,7 +311,7 @@ export function renderTable(root, { rows, banks, loading }) {
   for (const bank of banks) {
     const th = document.createElement("th");
     th.textContent = bank;
-    if (bank === HSBC_BANK) th.className = "hsbc-col";
+    if (bank === HSBC_BANK) th.className = "hsbc-col-header";
     const hint = document.createElement("span");
     hint.className = "th-hint";
     hint.textContent = "Margin % of mid";

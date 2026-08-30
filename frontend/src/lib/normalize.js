@@ -70,7 +70,7 @@ export function rateTypeLabel(rateType) {
   }
 }
 
-export function formatRate(value, digits = 3) {
+export function formatRate(value, digits = 2) {
   if (value == null) return "—";
   return `${value.toFixed(digits)}%`;
 }
