@@ -148,24 +148,27 @@ export function buildHsbcInsights(comparisonRows, insightBandLabel) {
   };
 }
 
-/** One point per date: HSBC margin, peer median, and rank for a currency + band. */
+/** One point per dated CSV: HSBC margin, peer median, and rank for a currency + band. */
 export function buildHsbcTimeSeries(historical, rateType, currency, band) {
   const dates = [...historical.keys()].sort((a, b) => a.localeCompare(b));
   const series = [];
   for (const date of dates) {
     const rows = historical.get(date) ?? [];
     const comparison = buildComparisonRows(rows, rateType, currency, band);
-    const match =
-      comparison.find((row) => row.base_currency === currency) ?? comparison[0];
-    if (!match) continue;
-    const snap = analyzeHsbcRow(match);
-    if (!snap) continue;
-    series.push({
-      date,
-      hsbc: snap.hsbcMargin,
-      peerMedian: snap.peerMedian,
-      rank: snap.rank,
-    });
+    const match = comparison.find((row) => row.base_currency === currency);
+    const point = { date, hsbc: null, peerMedian: null, rank: null };
+    if (match) {
+      const snap = analyzeHsbcRow(match);
+      if (snap) {
+        point.hsbc = snap.hsbcMargin;
+        point.peerMedian = snap.peerMedian;
+        point.rank = snap.rank;
+      } else {
+        const peers = quoted(match).filter((q) => q.bank !== HSBC_BANK);
+        point.peerMedian = median(peers.map((p) => p.margin));
+      }
+    }
+    series.push(point);
   }
   return series;
 }

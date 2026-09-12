@@ -64,7 +64,6 @@ Consolidated CSVs on `main` are the source of truth. For a dashboard that cannot
 window.FX_DATA_BASE_URL =
   "https://raw.githubusercontent.com/binoybhanujan/fx-margin-scraper/main/data/consolidated";
 ```
-
 Then host the `frontend/` folder as static files.
 
 ## Data files used
@@ -74,3 +73,4 @@ Then host the `frontend/` folder as static files.
 | `latest.csv` | Fallback snapshot when `index.json` has no dates |
 | `index.json` | List of dated CSVs for the date filter and trends |
 | `{date}.csv` | Historical snapshots |
+

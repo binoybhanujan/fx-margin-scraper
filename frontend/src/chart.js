@@ -248,7 +248,10 @@ function drawDatedLineChart(container, { series, lines, yFormat, invertY, ariaLa
     text.setAttribute("y", String(height - 12));
     text.setAttribute("class", "chart-axis");
     text.setAttribute("text-anchor", "middle");
-    text.textContent = row.date;
+    text.textContent =
+      typeof row.date === "string" && row.date.length >= 10
+        ? row.date.slice(5)
+        : row.date;
     svg.append(text);
   });
 
@@ -310,14 +313,13 @@ export function renderPeerMedianChart(container, { series, caption }) {
 
 export function renderRankChart(container, { series, caption }) {
   container.replaceChildren();
-  const ranked = (series ?? []).filter((row) => typeof row.rank === "number");
-  if (ranked.length === 0) {
+  if (!series || series.length === 0) {
     emptyChart(container, "No historical HSBC rank yet.");
     return;
   }
   appendCaption(container, caption);
   drawDatedLineChart(container, {
-    series: ranked,
+    series,
     lines: [{ key: "rank", label: "HSBC rank (1 = cheapest)", color: "#db0011", width: "2.5" }],
     yFormat: (v) => v.toFixed(1),
     invertY: true,
