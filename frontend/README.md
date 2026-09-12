@@ -2,7 +2,7 @@
 
 Browser-native dashboard (HTML, CSS, ES modules). No Vite, npm, or other build step.
 
-HSBC-centric view of board **margin % of mid** versus DBS, OCBC, and UOB. Lower % is cheaper for the customer. Nothing here is a pricing or trading recommendation.
+HSBC-centric view of board **margin % of MAS midday** versus DBS, OCBC, and UOB. Lower % is cheaper for the customer. Nothing here is a pricing or trading recommendation.
 
 ## Page layout
 
@@ -26,7 +26,7 @@ Titled tiles, top to bottom:
 
 ## Metric definitions
 
-All figures come from standardized CSV rows (`sell_margin_pct` / `buy_margin_pct`). Missing quotes stay blank.
+All figures come from standardized CSV rows (`sell_margin_pct` / `buy_margin_pct`), which are board vs the same-day MAS midday print. Missing quotes (including days or currencies with no MAS rate) stay blank.
 
 | Metric | Definition |
 |--------|------------|

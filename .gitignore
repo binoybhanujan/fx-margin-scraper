@@ -207,6 +207,9 @@ data/raw/**
 # Consolidated CSVs are committed (GitHub source of truth for the dashboard)
 data/consolidated/*_long.csv
 
+# MAS daily rates are committed (same dated-file pattern as consolidated)
+data/market/*_long.csv
+
 # Frontend (static; no Node build artifacts expected)
 frontend/node_modules/
 frontend/dist/
