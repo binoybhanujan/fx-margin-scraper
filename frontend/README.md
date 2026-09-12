@@ -1,8 +1,8 @@
 # HSBC FX Margin Intelligence
 
-Browser-native dashboard (HTML, CSS, ES modules). No Vite, npm, or other build step.
+React + TypeScript dashboard (Vite, Tailwind CSS, Recharts). HSBC-centric view of board **margin % of MAS midday** versus DBS, OCBC, and UOB. Lower % is cheaper for the customer. Nothing here is a pricing or trading recommendation.
 
-HSBC-centric view of board **margin % of MAS midday** versus DBS, OCBC, and UOB. Lower % is cheaper for the customer. Nothing here is a pricing or trading recommendation.
+Colours match the previous static page: HSBC red `#db0011`, grey paper `#e6e7e8`, ink `#1d1d1b`, Helvetica Neue.
 
 ## Page layout
 
@@ -13,16 +13,6 @@ Titled tiles, top to bottom:
 3. **HSBC vs the market** — peer median and HSBC rank
 4. **Headroom by currency** — snapshot bars for the selected date
 5. **Bank comparison** — currency and band apply only to this table
-
-## Features
-
-- KPI strip: how many currencies HSBC quotes, how often HSBC is cheapest / most expensive, median rank, median gap vs the cheapest peer
-- Opportunity to widen: HSBC cheaper than the **median of other quoting banks** (headroom = peer median − HSBC)
-- Competitive pressure: HSBC widest or above peer median (gap = HSBC − cheapest peer)
-- Least / most expensive **in the market** (median of all quoting banks) and **on HSBC’s book** (HSBC’s own margin)
-- Time series: HSBC vs peer median and HSBC rank (1 = cheapest for the customer)
-- Headroom bars for every HSBC-quoted currency on the selected date
-- Side-by-side comparison table (HSBC column first)
 
 ## Metric definitions
 
@@ -36,35 +26,33 @@ All figures come from standardized CSV rows (`sell_margin_pct` / `buy_margin_pct
 
 Insights and trend views use the **insight band**: the table’s selected band, or **SGD 50 – 200** when the table band is All. Insights always include every currency HSBC quotes. The comparison table is the only view filtered by currency.
 
-## Disclaimers
-
-- Rates are indicative board rates from each bank’s public page.
-- Mid is the bank-published mid when present; otherwise the average of buy and sell.
-- HSBC has no SGD amount tiers; standardized large/small bands copy the same board.
-- No volumes, so there is no book-weighted view.
-
 ## Local development
 
 From the **repository root**:
 
 ```bash
 python scripts/scrape.py
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://localhost:5173
+
+Vite serves CSV/JSON from `../data` at `/repo-data/`.
+
+## Production build
+
+```bash
+cd frontend
+npm run build
+cd ..
 python scripts/serve_dashboard.py
 ```
 
-Open http://127.0.0.1:5173
+(`serve_dashboard.py` serves `frontend/dist` on port 4173.)
 
-The Python server serves `frontend/` at `/` and `data/` at `/repo-data/`.
-
-## Production data URL
-
-Consolidated CSVs on `main` are the source of truth. For a dashboard that cannot use `/repo-data`, set `window.FX_DATA_BASE_URL` in `frontend/config.js`:
-
-```javascript
-window.FX_DATA_BASE_URL =
-  "https://raw.githubusercontent.com/binoybhanujan/fx-margin-scraper/main/data/consolidated";
-```
-Then host the `frontend/` folder as static files.
+For a host without `/repo-data`, set `VITE_DATA_BASE_URL` (see `.env.example`) before `npm run build`.
 
 ## Data files used
 
@@ -73,4 +61,3 @@ Then host the `frontend/` folder as static files.
 | `latest.csv` | Fallback snapshot when `index.json` has no dates |
 | `index.json` | List of dated CSVs for the date filter and trends |
 | `{date}.csv` | Historical snapshots |
-

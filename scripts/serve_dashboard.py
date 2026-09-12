@@ -1,20 +1,21 @@
-"""Serve the dashboard as static files with no Node, Vite, or other build tools.
+"""Serve a built dashboard (`frontend/dist`) plus repo CSVs at /repo-data.
 
-Maps /repo-data/... to the repository data/ directory so the dashboard can load
-consolidated CSVs the same way the old Vite plugin did.
+For local development use `cd frontend && npm run dev` (Vite). This script is
+for a production-style static preview after `npm run build`.
 """
 
 from __future__ import annotations
 
 import argparse
 import posixpath
+import sys
 from functools import partial
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-FRONTEND_DIR = REPO_ROOT / "frontend"
+FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
 DATA_DIR = REPO_ROOT / "data"
 
 
@@ -31,15 +32,16 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             if candidate == data_root or data_root in candidate.parents:
                 return str(candidate)
             return str(data_root / "__missing__")
-        # Serve frontend/ as the document root.
         rel = raw.lstrip("/") or "."
         if rel == ".":
-            return str(FRONTEND_DIR / "index.html")
-        candidate = (FRONTEND_DIR / rel).resolve()
-        front_root = FRONTEND_DIR.resolve()
+            return str(FRONTEND_DIST / "index.html")
+        candidate = (FRONTEND_DIST / rel).resolve()
+        front_root = FRONTEND_DIST.resolve()
         if candidate == front_root or front_root in candidate.parents:
-            return str(candidate)
-        return str(front_root / "__missing__")
+            if candidate.is_file():
+                return str(candidate)
+            return str(FRONTEND_DIST / "index.html")
+        return str(FRONTEND_DIST / "index.html")
 
     def log_message(self, format: str, *args: object) -> None:
         message = format % args
@@ -48,13 +50,24 @@ class DashboardHandler(SimpleHTTPRequestHandler):
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Serve the FX dashboard and consolidated CSVs (no build step)."
+        description="Serve the built FX dashboard and consolidated CSVs."
     )
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=5173)
+    parser.add_argument("--port", type=int, default=4173)
     args = parser.parse_args(argv)
 
-    handler = partial(DashboardHandler, directory=str(FRONTEND_DIR))
+    if not (FRONTEND_DIST / "index.html").is_file():
+        print(
+            "No frontend/dist build found. For development run:\n"
+            "  cd frontend && npm install && npm run dev\n"
+            "Or build first:\n"
+            "  cd frontend && npm run build\n"
+            "  python scripts/serve_dashboard.py",
+            file=sys.stderr,
+        )
+        return 1
+
+    handler = partial(DashboardHandler, directory=str(FRONTEND_DIST))
     server = ThreadingHTTPServer((args.host, args.port), handler)
     print(f"Dashboard: http://{args.host}:{args.port}/", flush=True)
     print(f"Data:      http://{args.host}:{args.port}/repo-data/consolidated/", flush=True)

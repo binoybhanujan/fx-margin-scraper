@@ -21,7 +21,7 @@ fx-margin-scraper/
 │   ├── raw/{bank}/          # Per-bank snapshots (gitignored)
 │   ├── consolidated/        # Merged bank CSVs (committed; GitHub source of truth)
 │   └── market/              # MAS daily SGD rates (committed)
-├── frontend/                # Comparison dashboard (static HTML/JS, no build)
+├── frontend/                # React dashboard (Vite, Tailwind, Recharts)
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -57,11 +57,11 @@ After a run:
 
 ## Dashboard (frontend)
 
-Compare bank rates side-by-side and view HSBC’s position versus peers. The UI is static HTML, CSS, and ES modules — no Vite, npm, or bundler.
+Compare bank rates side-by-side and view HSBC’s position versus peers. The UI is React + TypeScript, built with Vite, Tailwind CSS, and Recharts.
 
 ```bash
 python scripts/scrape.py              # ensure data/ is populated
-python scripts/serve_dashboard.py     # http://127.0.0.1:5173
+cd frontend && npm install && npm run dev   # http://localhost:5173
 ```
 
 See [frontend/README.md](frontend/README.md).

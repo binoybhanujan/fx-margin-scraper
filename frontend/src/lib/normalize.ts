@@ -1,5 +1,7 @@
+import type { FxRateRow, RateType } from "./types";
+
 /** Sort key from standardized band label (lowest SGD in the band). */
-export function transactionBandSortKey(label) {
+export function transactionBandSortKey(label: string) {
   const trimmed = label.trim();
   if (trimmed.includes("<")) {
     return 0;
@@ -10,18 +12,22 @@ export function transactionBandSortKey(label) {
 }
 
 export function getDataBaseUrl() {
+  const fromEnv = import.meta.env.VITE_DATA_BASE_URL;
+  if (fromEnv) {
+    return String(fromEnv).replace(/\/$/, "");
+  }
   if (typeof window !== "undefined" && window.FX_DATA_BASE_URL) {
     return String(window.FX_DATA_BASE_URL).replace(/\/$/, "");
   }
   return "/repo-data/consolidated";
 }
 
-export function normalizeRate(rate, unit) {
+export function normalizeRate(rate: number | null, unit: number) {
   if (rate == null || unit <= 0) return null;
   return rate / unit;
 }
 
-export function getRateValue(row, rateType) {
+export function getRateValue(row: FxRateRow, rateType: RateType) {
   switch (rateType) {
     case "tt_od_sell":
       return (
@@ -38,28 +44,30 @@ export function getRateValue(row, rateType) {
   }
 }
 
-function marginPctOfMid(rate, mid, customerBuysFcy) {
+function marginPctOfMid(
+  rate: number | null,
+  mid: number | null,
+  customerBuysFcy: boolean,
+) {
   if (rate == null || mid == null || mid === 0) return null;
-  return customerBuysFcy
-    ? ((rate - mid) / mid) * 100
-    : ((mid - rate) / mid) * 100;
+  return customerBuysFcy ? ((rate - mid) / mid) * 100 : ((mid - rate) / mid) * 100;
 }
 
 /** Band used for cross-bank comparison (standardized tiers only in the dashboard). */
-export function getTransactionBand(row) {
+export function getTransactionBand(row: FxRateRow) {
   return row.std_transaction_value ?? row.transaction_value;
 }
 
-export function isStandardizedRow(row) {
+export function isStandardizedRow(row: FxRateRow) {
   return row.record_type === "standardized";
 }
 
 /** Lower margin % of mid is better for the customer on both buy and sell. */
-export function isLowerBetter(_rateType) {
+export function isLowerBetter(_rateType: RateType) {
   return true;
 }
 
-export function rateTypeLabel(rateType) {
+export function rateTypeLabel(rateType: RateType) {
   switch (rateType) {
     case "tt_od_sell":
       return "Buy FCY margin % of mid (bank sell)";
@@ -70,15 +78,14 @@ export function rateTypeLabel(rateType) {
   }
 }
 
-export function formatRate(value, digits = 2) {
+export function formatRate(value: number | null, digits = 2) {
   if (value == null) return "—";
   return `${value.toFixed(digits)}%`;
 }
 
-export function sortTransactionBands(values) {
+export function sortTransactionBands(values: string[]) {
   return [...values].sort(
     (a, b) =>
-      transactionBandSortKey(a) - transactionBandSortKey(b) ||
-      a.localeCompare(b),
+      transactionBandSortKey(a) - transactionBandSortKey(b) || a.localeCompare(b),
   );
 }

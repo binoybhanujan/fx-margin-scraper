@@ -210,7 +210,7 @@ data/consolidated/*_long.csv
 # MAS daily rates are committed (same dated-file pattern as consolidated)
 data/market/*_long.csv
 
-# Frontend (static; no Node build artifacts expected)
+# Frontend (Vite build artifacts)
 frontend/node_modules/
 frontend/dist/
 # Python packaging ignores `lib/`; keep the dashboard data layer.

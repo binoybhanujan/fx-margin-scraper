@@ -5,7 +5,7 @@ alwaysApply: true
 
 # FX margin scraper
 
-Python scraper plus a static HTML/JS dashboard (no Vite or other build tools).
+Python scraper plus a React/Vite dashboard (Tailwind, Recharts).
 
 ## Understand Before You Change
 
@@ -23,7 +23,7 @@ Python scraper plus a static HTML/JS dashboard (no Vite or other build tools).
 - Scrapers live in `src/fx_scraper/banks/`. Register new banks in `src/fx_scraper/banks/__init__.py`.
 - Shared models: `src/fx_scraper/models.py`. CSV export: `src/fx_scraper/exporter.py`.
 - Standardized SGD bands: `src/fx_scraper/std_bands.py`.
-- Dashboard: `frontend/` (HTML, CSS, ES modules). Data layer: `frontend/src/lib/` (do not rely on git ignoring `lib/`; `.gitignore` must keep `frontend/src/lib/` tracked). Serve with `python scripts/serve_dashboard.py`.
+- Dashboard: `frontend/` React + TypeScript + Vite + Tailwind + Recharts. Data layer: `frontend/src/lib/` (do not rely on git ignoring `lib/`; `.gitignore` must keep `frontend/src/lib/` tracked). Local dev: `cd frontend && npm run dev`. After `npm run build`, `python scripts/serve_dashboard.py` serves `frontend/dist`.
 - Run scrape with `python scripts/scrape.py`. Do not commit `data/raw/` or secrets.
 
 ## Scraping
@@ -38,7 +38,7 @@ Python scraper plus a static HTML/JS dashboard (no Vite or other build tools).
 - Compare using `record_type === "standardized"` only.
 - Show SGD per 1 FCY (`rate / unit`). Group table rows by currency pair + standardized band, not by `unit`.
 - Order transaction bands by numeric SGD value (low to high).
-- Date filter loads `data/consolidated/{date}.csv` via `/repo-data` when using `scripts/serve_dashboard.py` (or `window.FX_DATA_BASE_URL` in `frontend/config.js` on a static host).
+- Date filter loads `data/consolidated/{date}.csv` via `/repo-data` (Vite middleware in `npm run dev`, or `python scripts/serve_dashboard.py` after a build). On a static host set `VITE_DATA_BASE_URL`.
 
 ## Git
 

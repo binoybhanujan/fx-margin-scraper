@@ -1,17 +1,18 @@
-import { parseCsv } from "./parseCsv.js";
-import { getDataBaseUrl } from "./normalize.js";
+import Papa from "papaparse";
+import { getDataBaseUrl } from "./normalize";
+import type { ConsolidatedIndex, FxRateRow, RecordType } from "./types";
 
-function parseNumber(value) {
+function parseNumber(value: string | undefined) {
   if (!value || value.trim() === "") return null;
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
 }
 
-function parseRecordType(value) {
+function parseRecordType(value: string | undefined): RecordType {
   return value === "standardized" ? "standardized" : "native";
 }
 
-function parseRow(raw) {
+function parseRow(raw: Record<string, string>): FxRateRow {
   const stdTransactionValue = raw.std_transaction_value?.trim();
   const stdAmountTier = raw.std_amount_tier?.trim();
   return {
@@ -37,7 +38,7 @@ function parseRow(raw) {
   };
 }
 
-export async function fetchCsv(filename) {
+export async function fetchCsv(filename: string) {
   const base = getDataBaseUrl();
   const url = `${base}/${filename}`;
   const response = await fetch(url);
@@ -45,10 +46,14 @@ export async function fetchCsv(filename) {
     throw new Error(`Failed to load ${url} (${response.status})`);
   }
   const text = await response.text();
-  return parseCsv(text).map(parseRow);
+  const parsed = Papa.parse<Record<string, string>>(text, {
+    header: true,
+    skipEmptyLines: true,
+  });
+  return parsed.data.map(parseRow);
 }
 
-export async function fetchIndex() {
+export async function fetchIndex(): Promise<ConsolidatedIndex> {
   const base = getDataBaseUrl();
   const url = `${base}/index.json`;
   try {
@@ -62,8 +67,8 @@ export async function fetchIndex() {
   }
 }
 
-export async function loadHistoricalRates(dates) {
-  const byDate = new Map();
+export async function loadHistoricalRates(dates: string[]) {
+  const byDate = new Map<string, FxRateRow[]>();
   for (const date of dates) {
     try {
       byDate.set(date, await fetchCsv(`${date}.csv`));
