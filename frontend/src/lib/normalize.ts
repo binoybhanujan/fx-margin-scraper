@@ -19,7 +19,7 @@ export function getDataBaseUrl() {
   if (typeof window !== "undefined" && window.FX_DATA_BASE_URL) {
     return String(window.FX_DATA_BASE_URL).replace(/\/$/, "");
   }
-  return `${import.meta.env.BASE_URL}data/consolidated`;
+  return "/repo-data/consolidated";
 }
 
 export function normalizeRate(rate: number | null, unit: number) {

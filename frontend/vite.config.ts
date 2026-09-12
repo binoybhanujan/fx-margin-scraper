@@ -52,7 +52,7 @@ function serveRepoData(): Plugin {
 }
 
 export default defineConfig({
-  base: "/fx-margin-scraper/",
+  // base: "/fx-margin-scraper/",
   plugins: [react(), serveRepoData()],
   server: {
     port: 5173,
