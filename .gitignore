@@ -207,7 +207,10 @@ data/raw/**
 # Consolidated CSVs are committed (GitHub source of truth for the dashboard)
 data/consolidated/*_long.csv
 
-# Frontend
+# MAS daily rates are committed (same dated-file pattern as consolidated)
+data/market/*_long.csv
+
+# Frontend (Vite build artifacts)
 frontend/node_modules/
 frontend/dist/
 # Python packaging ignores `lib/`; keep the dashboard data layer.

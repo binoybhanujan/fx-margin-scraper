@@ -28,18 +28,17 @@ export interface ConsolidatedIndex {
   dates: string[];
 }
 
+export interface BankCell {
+  rawRate: number | null;
+  normalizedRate: number | null;
+  last_updated: string;
+}
+
 export interface ComparisonRow {
   currency_pair: string;
   base_currency: string;
   transaction_value: string;
-  banks: Record<
-    string,
-    {
-      rawRate: number | null;
-      normalizedRate: number | null;
-      last_updated: string;
-    }
-  >;
+  banks: Record<string, BankCell>;
   bestBank: string | null;
 }
 
@@ -47,4 +46,55 @@ export interface TrendPoint {
   date: string;
   bank: string;
   rate: number;
+}
+
+export interface HsbcRowInsight {
+  currency_pair: string;
+  base_currency: string;
+  transaction_value: string;
+  hsbcMargin: number;
+  rank: number;
+  quotedCount: number;
+  isCheapest: boolean;
+  isMostExpensive: boolean;
+  cheapestBank: string;
+  cheapestPeerBank: string | null;
+  cheapestPeerMargin: number | null;
+  peerMedian: number | null;
+  gapVsCheapest: number | null;
+  headroom: number | null;
+}
+
+export interface MarketRowInsight {
+  currency_pair: string;
+  base_currency: string;
+  transaction_value: string;
+  marketMedian: number;
+  cheapestBank: string;
+  widestBank: string;
+}
+
+export interface HsbcInsights {
+  band: string;
+  kpis: {
+    quoted: number;
+    cheapestCount: number;
+    mostExpensiveCount: number;
+    medianRank: number | null;
+    medianGapVsCheapest: number | null;
+  };
+  widen: HsbcRowInsight[];
+  pressure: HsbcRowInsight[];
+  marketCheapest: MarketRowInsight[];
+  marketDearest: MarketRowInsight[];
+  hsbcCheapest: HsbcRowInsight[];
+  hsbcDearest: HsbcRowInsight[];
+  headroomBars: HsbcRowInsight[];
+}
+
+export interface PeerSeriesPoint {
+  date: string;
+  hsbc: number | null;
+  peerMedian: number | null;
+  rank: number | null;
 }

@@ -1,8 +1,8 @@
 import Papa from "papaparse";
-import type { ConsolidatedIndex, FxRateRow, RecordType } from "./types";
 import { getDataBaseUrl } from "./normalize";
+import type { ConsolidatedIndex, FxRateRow, RecordType } from "./types";
 
-function parseNumber(value: string | undefined): number | null {
+function parseNumber(value: string | undefined) {
   if (!value || value.trim() === "") return null;
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
@@ -38,7 +38,7 @@ function parseRow(raw: Record<string, string>): FxRateRow {
   };
 }
 
-export async function fetchCsv(filename: string): Promise<FxRateRow[]> {
+export async function fetchCsv(filename: string) {
   const base = getDataBaseUrl();
   const url = `${base}/${filename}`;
   const response = await fetch(url);
@@ -50,9 +50,6 @@ export async function fetchCsv(filename: string): Promise<FxRateRow[]> {
     header: true,
     skipEmptyLines: true,
   });
-  if (parsed.errors.length > 0) {
-    console.warn("CSV parse warnings:", parsed.errors);
-  }
   return parsed.data.map(parseRow);
 }
 
@@ -64,15 +61,13 @@ export async function fetchIndex(): Promise<ConsolidatedIndex> {
     if (!response.ok) {
       return { latest: "latest.csv", dates: [] };
     }
-    return (await response.json()) as ConsolidatedIndex;
+    return await response.json();
   } catch {
     return { latest: "latest.csv", dates: [] };
   }
 }
 
-export async function loadHistoricalRates(
-  dates: string[],
-): Promise<Map<string, FxRateRow[]>> {
+export async function loadHistoricalRates(dates: string[]) {
   const byDate = new Map<string, FxRateRow[]>();
   for (const date of dates) {
     try {
