@@ -52,8 +52,11 @@ function serveRepoData(): Plugin {
 }
 
 export default defineConfig({
-  // base: "/fx-margin-scraper/",
-  plugins: [react(), serveRepoData()],
+  base: "/fx-margin-scraper/",
+  plugins: [
+    react(),
+    process.env.NODE_ENV !== "production" ? serveRepoData() : null,
+  ].filter(Boolean),
   server: {
     port: 5173,
   },
