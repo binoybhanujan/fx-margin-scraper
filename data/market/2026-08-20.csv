@@ -1,22 +1,22 @@
 date,source,source_url,frequency,mas_currency,base_currency,quote_currency,unit,sgd_per_unit,scraped_at
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Australian Dollar,AUD,SGD,100,90.51,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Canadian Dollar,CAD,SGD,100,92.13,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Chinese Renminbi,CNY,SGD,100,18.91,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Euro,EUR,SGD,1,1.4849,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Hong Kong Dollar,HKD,SGD,100,16.21,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Indian Rupee,INR,SGD,100,1.3291,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Indonesian Rupiah,IDR,SGD,100,0.007158,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Japanese Yen,JPY,SGD,100,0.8024,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Korean Won,KRW,SGD,100,0.0912,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Malaysian Ringgit,MYR,SGD,100,31.46,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,New Taiwan Dollar,TWD,SGD,100,3.9913,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,New Zealand Dollar,NZD,SGD,100,75.67,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Philippine Peso,PHP,SGD,100,2.0648,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Pound Sterling,GBP,SGD,1,1.7307,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Qatar Riyal,QAR,SGD,100,34.89,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Saudi Arabia Riyal,SAR,SGD,100,33.86,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Swiss Franc,CHF,SGD,100,158.99,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Thai Baht,THB,SGD,100,3.8724,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,UAE Dirham,AED,SGD,100,34.61,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,US Dollar,USD,SGD,1,1.2713,2026-09-23T17:19:51Z
-2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Vietnamese Dong,VND,SGD,100,0.004861,2026-09-23T17:19:51Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Australian Dollar,AUD,SGD,100,90.51,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Canadian Dollar,CAD,SGD,100,92.13,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Chinese Renminbi,CNY,SGD,100,18.91,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Euro,EUR,SGD,1,1.4849,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Hong Kong Dollar,HKD,SGD,100,16.21,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Indian Rupee,INR,SGD,100,1.3291,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Indonesian Rupiah,IDR,SGD,100,0.007158,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Japanese Yen,JPY,SGD,100,0.8024,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Korean Won,KRW,SGD,100,0.0912,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Malaysian Ringgit,MYR,SGD,100,31.46,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,New Taiwan Dollar,TWD,SGD,100,3.9913,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,New Zealand Dollar,NZD,SGD,100,75.67,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Philippine Peso,PHP,SGD,100,2.0648,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Pound Sterling,GBP,SGD,1,1.7307,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Qatar Riyal,QAR,SGD,100,34.89,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Saudi Arabia Riyal,SAR,SGD,100,33.86,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Swiss Franc,CHF,SGD,100,158.99,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Thai Baht,THB,SGD,100,3.8724,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,UAE Dirham,AED,SGD,100,34.61,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,US Dollar,USD,SGD,1,1.2713,2026-09-24T17:24:56Z
+2026-08-20,MAS,https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx,daily,Vietnamese Dong,VND,SGD,100,0.004861,2026-09-24T17:24:56Z
