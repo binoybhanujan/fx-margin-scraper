@@ -6,4 +6,472 @@ body {
 
 body {
     font-family: Arial, Helvetica, sans-serif;
+    background: #f5f5f5;
+    color: #1d1d1b;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.dashboard-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding-left: 36px;
+    padding-right: 36px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.dashboard-header {
+    background: #ffffff;
+    color: #333333;
+    border-top: 6px solid #db0011;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-header .dashboard-container {
+    padding-top: 28px;
+    padding-bottom: 20px;
+}
+
+.dashboard-header h1 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+
+    margin: 0;
+
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+.hsbc-brand {
+    color: #db0011;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.header-divider {
+    width: 1px;
+    height: 1.15em;
+    background: #333333;
+}
+
+.dashboard-header p {
+    margin: 8px 0 0;
+
+    color: #666666;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.dashboard-main {
+    padding-top: 20px;
+    padding-bottom: 40px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+
+/* =========================================================
+   DASHBOARD TILE
+   ========================================================= */
+
+.dashboard-tile {
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #c5c6c4;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.tile-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+
+    gap: 16px;
+
+    padding: 16px 24px;
+
+    background: #1d1d1b;
+
+    border-bottom: 4px solid #db0011;
+}
+
+.tile-header h2 {
+    flex: 1;
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.tile-header-aside {
+    margin: 0;
+
+    color: #c8c9c7;
+
+    font-size: 14px;
+}
+
+.tile-body {
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.filter-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    font-size: 14px;
+}
+
+.field > span {
+    color: #5c5c5c;
+}
+
+.field select {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 8px 12px;
+
+    border: 1px solid #c5c6c4;
+
+    border-radius: 0;
+
+    background: #ffffff;
+
+    color: #1d1d1b;
+
+    font: inherit;
+}
+
+.field select:focus {
+    outline: 2px solid #db0011;
+    outline-offset: 1px;
+}
+
+
+/* =========================================================
+   KPI
+   ========================================================= */
+
+.kpi-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.kpi-card {
+    padding: 14px;
+
+    background: #f0f1f2;
+
+    border-top: 3px solid #db0011;
+}
+
+.kpi-label {
+    margin: 0;
+
+    color: #5c5c5c;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.06em;
+}
+
+.kpi-value {
+    margin: 6px 0 0;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* =========================================================
+   INSIGHTS
+   ========================================================= */
+
+.insight-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 24px;
+}
+
+.insight-grid h3 {
+    margin: 0;
+
+    font-size: 16px;
+
+    font-weight: 600;
+}
+
+.section-description {
+    margin: 0 0 8px;
+
+    color: #666666;
+
+    font-size: 14px;
+}
+
+.summary-text {
+    margin: 0;
+
+    font-size: 15px;
+
+    line-height: 1.45;
+}
+
+.dashboard-note {
+    margin: 0;
+
+    color: #666666;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
+.table-wrapper {
+    overflow-x: auto;
+
+    border: 1px solid #d7d8d6;
+}
+
+.data-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 14px;
+}
+
+.data-table th {
+    padding: 12px 16px;
+
+    text-align: left;
+
+    font-weight: 600;
+
+    background: #f0f1f2;
+
+    border-bottom: 1px solid #c5c6c4;
+
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 12px 16px;
+
+    border-top: 1px solid #d7d8d6;
+
+    white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+    background: #f5f5f5;
+}
+
+.data-table .hsbc-column {
+    background: #fff2f3;
+}
+
+.data-table .best-value {
+    color: #287d3c;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CHART LAYOUT
+   ========================================================= */
+
+.chart-toolbar {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: flex-end;
+
+    gap: 16px;
+}
+
+.chart-toolbar p {
+    flex: 1;
+
+    margin: 0;
+
+    color: #666666;
+
+    font-size: 14px;
+}
+
+.two-column-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.two-column-grid h3 {
+    margin: 20px 0 4px;
+
+    font-size: 15px;
+}
+
+.chart-container {
+    width: 100%;
+
+    min-height: 280px;
+
+    position: relative;
+}
+
+
+/* =========================================================
+   ERROR / EMPTY
+   ========================================================= */
+
+.error-message {
+    padding: 16px;
+
+    border: 1px solid #db0011;
+
+    background: #fde8e8;
+
+    color: #6b0008;
+
+    font-size: 14px;
+}
+
+.empty-message {
+    padding: 32px;
+
+    color: #666666;
+
+    text-align: center;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .filter-grid,
+    .insight-grid,
+    .two-column-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .dashboard-header h1 {
+        font-size: 20px;
+    }
+
+    .tile-body {
+        padding: 16px;
+    }
+
+    .tile-header {
+        padding: 14px 16px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+.table-header-subtitle {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    font-weight: 400;
+
+    color: #666666;
 }
