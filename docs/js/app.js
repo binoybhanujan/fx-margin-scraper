@@ -1,4 +1,11 @@
 import {
+    renderCompetitorTrendChart,
+    renderPeerMedianChart,
+    renderRankChart,
+    renderHeadroomBars
+} from "./charts.js";
+
+import {
     fetchIndex,
     fetchCsv,
     loadHistoricalRates,
@@ -83,9 +90,19 @@ const elements = {
         document.getElementById("transaction-filter"),
 
     comparisonTable:
-        document.getElementById(
-            "comparison-table-container"
-        )
+        document.getElementById("comparison-table-container"),
+    
+    competitorTrendChart:
+        document.getElementById("competitor-trend-chart-container"),
+
+    peerMedianChart:
+        document.getElementById("peer-median-chart-container"),
+
+    rankChart:
+        document.getElementById("rank-chart-container"),
+
+    headroomChart:
+        document.getElementById("headroom-chart-container")
 };
 
 
@@ -129,7 +146,7 @@ async function initialize() {
 
         setupFilters();
 
-        renderDashboard();
+        await renderDashboard();
 
 
         elements.loading.hidden = true;
@@ -221,6 +238,123 @@ async function loadSnapshot(date) {
     state.loading = false;
 }
 
+async function buildHistoricalChartData() {
+
+    if (state.historyDates.length === 0) {
+
+        state.trendPoints = [];
+        state.peerSeries = [];
+
+        return [];
+    }
+
+
+    const historical =
+        await loadHistoricalRates(
+            state.historyDates
+        );
+
+
+    const bands =
+        state.transactionBands.length > 0
+            ? state.transactionBands
+            : [];
+
+
+    const selectedBand =
+        state.transactionValue !== "all"
+            ? state.transactionValue
+            : bands[0] ?? "";
+
+
+    const trendPoints = [];
+
+
+    for (
+        const [date, rows]
+        of historical
+    ) {
+
+        const seen = new Set();
+
+
+        for (
+            const row
+            of filterStandardizedRows(rows)
+        ) {
+
+            if (
+                row.base_currency !==
+                state.trendCurrency
+            ) {
+                continue;
+            }
+
+
+            const rowBand =
+                getTransactionBand(row);
+
+
+            if (
+                selectedBand &&
+                rowBand !== selectedBand
+            ) {
+                continue;
+            }
+
+
+            const key =
+                `${date}|${row.bank}`;
+
+
+            if (seen.has(key)) {
+                continue;
+            }
+
+
+            const marginPct =
+                getRateValue(
+                    row,
+                    state.rateType
+                );
+
+
+            if (marginPct == null) {
+                continue;
+            }
+
+
+            seen.add(key);
+
+
+            trendPoints.push({
+
+                date,
+
+                bank:
+                    row.bank,
+
+                rate:
+                    marginPct
+            });
+        }
+    }
+
+
+    state.trendPoints =
+        trendPoints;
+
+
+    /*
+     * Peer-series calculation will be connected
+     * after insights.js is migrated.
+     *
+     * For now:
+     */
+    state.peerSeries = [];
+    return trendPoints;
+}
+
 
 function setupFilters() {
 
@@ -269,7 +403,7 @@ function setupFilters() {
 }
 
 
-function renderDashboard() {
+async function renderDashboard() {
 
     state.comparisonRows =
         buildComparisonRows(
@@ -279,6 +413,18 @@ function renderDashboard() {
             state.transactionValue
         );
 
+    const trendPoints =
+        await buildHistoricalChartData();
+
+    state.trendPoints =
+        trendPoints;
+
+    renderCompetitorTrendChart(
+        elements.competitorTrendChart,
+        trendPoints,
+        state.banks,
+        `${state.trendCurrency} — ${state.rateType}`
+    );
 
     console.log(
         "Dashboard state:",
@@ -300,7 +446,7 @@ elements.dateFilter.addEventListener(
 
         setupFilters();
 
-        renderDashboard();
+        await renderDashboard();
     }
 );
 
@@ -318,7 +464,7 @@ elements.rateTypeFilter.addEventListener(
 
         setupFilters();
 
-        renderDashboard();
+        await renderDashboard();
     }
 );
 
