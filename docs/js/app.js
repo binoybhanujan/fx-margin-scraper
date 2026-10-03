@@ -1,0 +1,1 @@
+console.log("FX Margin Dashboard - Static HTML frontend loaded.");
