@@ -165,7 +165,10 @@ const elements = {
         document.getElementById("rank-chart-container"),
 
     headroomChart:
-        document.getElementById("headroom-chart-container")
+        document.getElementById("headroom-chart-container"),
+
+    headerDataDate:
+        document.getElementById("header-data-date")
 };
 
 
@@ -1001,6 +1004,21 @@ async function renderDashboard() {
         false
     );
 
+    if (elements.headerDataDate) {
+        elements.headerDataDate.textContent =
+            state.selectedDate
+                ? new Date(
+                    `${state.selectedDate}T00:00:00`
+                ).toLocaleDateString(
+                    "en-GB",
+                    {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }
+                ).toUpperCase()
+                : "—";
+    }
 
     console.log(
         "Dashboard state:",

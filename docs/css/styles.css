@@ -27,50 +27,150 @@ body {
 
 
 /* =========================================================
-   HEADER
+   EXECUTIVE HEADER
    ========================================================= */
 
-.dashboard-header {
-    background: #ffffff;
-    color: #333333;
-    border-top: 6px solid #db0011;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+   .dashboard-header {
+    background: #1d1d1b;
+    color: #ffffff;
+
+    border-top: 5px solid #db0011;
+
+    border-bottom: 1px solid #333333;
 }
 
-.dashboard-header .dashboard-container {
-    padding-top: 28px;
-    padding-bottom: 20px;
-}
 
-.dashboard-header h1 {
+/* Main header layout */
+
+.dashboard-header-inner {
+    min-height: 82px;
+
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 32px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   BRANDING
+   ========================================================= */
+
+.dashboard-branding {
+    min-width: 0;
+}
+
+
+.dashboard-title-row {
+    display: flex;
     align-items: center;
     gap: 12px;
-
-    margin: 0;
-
-    font-size: 24px;
-    line-height: 1.2;
 }
+
+
+/* HSBC */
 
 .hsbc-brand {
     color: #db0011;
+    font-size: 23px;
     font-weight: 700;
     letter-spacing: 0.04em;
+    line-height: 1;
 }
+
+
+/* Vertical separator */
 
 .header-divider {
     width: 1px;
-    height: 1.15em;
-    background: #333333;
+
+    height: 26px;
+
+    background: #777777;
+
+    flex-shrink: 0;
 }
 
-.dashboard-header p {
-    margin: 8px 0 0;
 
-    color: #666666;
-    font-size: 15px;
+/* Dashboard title */
+
+.dashboard-header h1 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 23px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    letter-spacing: 0.01em;
+}
+
+
+/* Subtitle */
+
+.dashboard-subtitle {
+    margin: 7px 0 0;
+
+    color: #c8c9c7;
+
+    font-size: 13px;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   HEADER METADATA
+   ========================================================= */
+
+.dashboard-header-meta {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding-left: 24px;
+
+    border-left: 1px solid #444444;
+}
+
+
+.header-meta-label {
+    color: #999999;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.12em;
+
+    line-height: 1.2;
+}
+
+
+.header-meta-value {
+    margin-top: 4px;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    font-variant-numeric: tabular-nums;
+
+    line-height: 1.2;
 }
 
 
