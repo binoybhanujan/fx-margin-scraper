@@ -305,19 +305,10 @@ async function buildHistoricalChartData() {
 
     if (state.historyDates.length === 0) {
 
-        state.trendPoints = trendPoints;
+        state.trendPoints = [];
+        state.peerSeries = [];
 
-        state.peerSeries =
-            selectedBand
-                ? buildHsbcTimeSeries(
-                    historical,
-                    state.rateType,
-                    state.trendCurrency,
-                    selectedBand
-                )
-                : [];
-
-        return trendPoints;
+        return [];
     }
 
 
@@ -333,21 +324,33 @@ async function buildHistoricalChartData() {
             : [];
 
 
+    /*
+     * Use the same insight-band logic as the
+     * original React dashboard.
+     */
     const selectedBand =
-        state.transactionValue !== "all"
-            ? state.transactionValue
-            : bands[0] ?? "";
+        resolveInsightBand(
+            state.transactionValue,
+            bands
+        );
 
 
     const trendPoints = [];
 
+
+    /*
+     * ---------------------------------------------------------
+     * Competitor trend data
+     * ---------------------------------------------------------
+     */
 
     for (
         const [date, rows]
         of historical
     ) {
 
-        const seen = new Set();
+        const seen =
+            new Set();
 
 
         for (
@@ -413,17 +416,31 @@ async function buildHistoricalChartData() {
     }
 
 
+    /*
+     * ---------------------------------------------------------
+     * HSBC vs market historical series
+     * ---------------------------------------------------------
+     */
+
+    const peerSeries =
+        selectedBand
+            ? buildHsbcTimeSeries(
+                historical,
+                state.rateType,
+                state.trendCurrency,
+                selectedBand
+            )
+            : [];
+
+
     state.trendPoints =
         trendPoints;
 
 
-    /*
-     * Peer-series calculation will be connected
-     * after insights.js is migrated.
-     *
-     * For now:
-     */
-    state.peerSeries = [];
+    state.peerSeries =
+        peerSeries;
+
+
     return trendPoints;
 }
 
