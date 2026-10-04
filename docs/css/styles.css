@@ -340,6 +340,35 @@ body {
     font-weight: 600;
 }
 
+.compact-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.compact-table th,
+.compact-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #d7d8d6;
+    text-align: left;
+}
+
+.compact-table th {
+    font-weight: 600;
+    color: #5c5c5c;
+    background: #f0f1f2;
+    white-space: nowrap;
+}
+
+.compact-table td {
+    color: #333333;
+    white-space: nowrap;
+}
+
+.compact-table tbody tr:hover {
+    background: #f5f5f5;
+}
+
 
 /* =========================================================
    CHART LAYOUT
