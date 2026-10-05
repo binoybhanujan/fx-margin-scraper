@@ -26,8 +26,8 @@ from fx_scraper.models import FxRatesSnapshot
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = PROJECT_ROOT / "data"
-RAW_DIR = DATA_DIR / "raw"
+DATA_DIR = PROJECT_ROOT / "docs" / "data"
+RAW_DIR = PROJECT_ROOT / "data" / "raw"
 CONSOLIDATED_DIR = DATA_DIR / "consolidated"
 MARKET_DIR = DATA_DIR / "market"
 

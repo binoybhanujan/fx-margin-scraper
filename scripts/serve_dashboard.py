@@ -16,7 +16,7 @@ from urllib.parse import unquote, urlparse
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
-DATA_DIR = REPO_ROOT / "data"
+DATA_DIR = REPO_ROOT / "docs" / "data"
 
 
 class DashboardHandler(SimpleHTTPRequestHandler):
