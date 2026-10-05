@@ -135,13 +135,57 @@ export function renderCompetitorTrendChart(
                     ? 2.5
                     : 2,
 
-            pointRadius: 3,
+                pointRadius: 2,
+                pointHoverRadius: 5,
 
             tension: 0.25,
 
             spanGaps: false
         }));
-
+    
+    const existingChart =
+        chartInstances.competitorTrend;
+    
+    if (existingChart) {
+    
+        const existingDatasets =
+            new Map(
+                existingChart.data.datasets.map(
+                    dataset => [dataset.label, dataset]
+                )
+            );
+    
+        existingChart.data.labels =
+            series.map(
+                row => row.date
+            );
+    
+        existingChart.data.datasets =
+            datasets.map(dataset => {
+    
+                const existingDataset =
+                    existingDatasets.get(dataset.label);
+    
+                if (existingDataset) {
+    
+                    Object.assign(
+                        existingDataset,
+                        dataset
+                    );
+    
+                    return existingDataset;
+                }
+    
+                return dataset;
+            });
+    
+        existingChart.options.plugins.title.text =
+            caption;
+    
+        existingChart.update();
+    
+        return;
+    }
 
     const canvas =
         createCanvas(
@@ -283,6 +327,40 @@ export function renderPeerMedianChart(
     }
 
 
+    const existingChart =
+        chartInstances.peerMedian;
+
+    if (existingChart) {
+
+        existingChart.data.labels =
+            series.map(
+                point => point.date
+            );
+
+        const existingPeerDataset =
+            existingChart.data.datasets[0];
+
+        const existingHsbcDataset =
+            existingChart.data.datasets[1];
+
+        existingPeerDataset.data =
+            series.map(
+                point => point.peerMedian
+            );
+
+        existingHsbcDataset.data =
+            series.map(
+                point => point.hsbc
+            );
+
+        existingChart.options.plugins.title.text =
+            caption;
+
+        existingChart.update();
+
+        return;
+    }
+
     const canvas =
         createCanvas(
             container,
@@ -324,7 +402,8 @@ export function renderPeerMedianChart(
 
                         borderWidth: 2,
 
-                        pointRadius: 3,
+                        pointRadius: 2,
+                        pointHoverRadius: 5,
 
                         tension: 0.25,
 
@@ -348,7 +427,8 @@ export function renderPeerMedianChart(
 
                         borderWidth: 2.5,
 
-                        pointRadius: 3,
+                        pointRadius: 2,
+                        pointHoverRadius: 5,
 
                         tension: 0.25,
 
@@ -362,6 +442,11 @@ export function renderPeerMedianChart(
                 responsive: true,
 
                 maintainAspectRatio: false,
+
+                animation: {
+                    duration: 750,
+                    easing: "easeInOutCubic"
+                },
 
                 interaction: {
                     mode: "index",
@@ -471,6 +556,28 @@ export function renderRankChart(
         return;
     }
 
+    const existingChart =
+        chartInstances.rank;
+
+    if (existingChart) {
+
+        existingChart.data.labels =
+            series.map(
+                point => point.date
+            );
+
+        existingChart.data.datasets[0].data =
+            series.map(
+                point => point.rank
+            );
+
+        existingChart.options.plugins.title.text =
+            caption;
+
+        existingChart.update();
+
+        return;
+    }
 
     const canvas =
         createCanvas(
@@ -512,8 +619,8 @@ export function renderRankChart(
                         borderWidth:
                             2.5,
 
-                        pointRadius:
-                            3,
+                        pointRadius: 2,
+                        pointHoverRadius: 5,
 
                         tension:
                             0.25,
@@ -529,6 +636,11 @@ export function renderRankChart(
                 responsive: true,
 
                 maintainAspectRatio: false,
+
+                animation: {
+                    duration: 750,
+                    easing: "easeInOutCubic"
+                },
 
                 interaction: {
                     mode: "index",
