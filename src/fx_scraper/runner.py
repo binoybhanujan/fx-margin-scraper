@@ -87,8 +87,8 @@ def run_all_scrapers(
     scrape_mas: bool = True,
 ) -> list[FxRatesSnapshot]:
     """Run every registered bank scraper and persist per-bank + consolidated outputs."""
-    raw_dir = (data_dir or DATA_DIR) / "raw"
     root = data_dir or DATA_DIR
+    raw_dir = (data_dir / "raw") if data_dir is not None else RAW_DIR
     consolidated_dir = root / "consolidated"
     today = date.today().isoformat()
 
