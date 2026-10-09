@@ -6,6 +6,8 @@ Collect foreign exchange rates from multiple Singapore banks, consolidate them i
 
 ```
 fx-margin-scraper/
+├── data/
+│   └── raw/{bank}/          # Per-bank snapshots (gitignored)
 ├── src/fx_scraper/          # Core Python package
 │   ├── models.py            # Shared data models
 │   ├── exporter.py          # CSV export (per-bank + consolidated)
@@ -17,11 +19,13 @@ fx-margin-scraper/
 │       └── __init__.py      # Scraper registry
 ├── scripts/
 │   └── scrape.py            # Run scraper (no install required)
-├── data/
-│   ├── raw/{bank}/          # Per-bank snapshots (gitignored)
-│   ├── consolidated/        # Merged bank CSVs (committed; GitHub source of truth)
-│   └── market/              # MAS daily SGD rates (committed)
-├── frontend/                # React dashboard (Vite, Tailwind, Recharts)
+├── docs/
+│   ├── data/
+│   │   ├── consolidated/    # Merged bank CSVs (committed; GitHub source of truth)
+│   │   └── market/          # MAS daily SGD rates (committed)
+│   ├── css/                 # CSS styling of the dashboard
+│   ├── js/                  # JavaScript modules of the dashboard
+│   └── vendor/              # JS packages required for the dashboard
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -46,8 +50,8 @@ After a run:
 | File | Description |
 |------|-------------|
 | `data/raw/dbs/2026-08-15.csv` | DBS rates for that day |
-| `data/consolidated/latest.csv` | All banks — native + standardized bands. `mid_rate` and margin % are vs **same-day MAS** midday when published (`bank_mid_rate` keeps the bank mid). |
-| `data/market/{date}.csv` | MAS daily SGD rates (all published currencies) for that business day |
+| `docs/data/consolidated/latest.csv` | All banks — native + standardized bands. `mid_rate` and margin % are vs **same-day MAS** midday when published (`bank_mid_rate` keeps the bank mid). |
+| `docs/data/market/{date}.csv` | MAS daily SGD rates (all published currencies) for that business day |
 
 ## Adding a new bank
 
@@ -57,11 +61,11 @@ After a run:
 
 ## Dashboard (frontend)
 
-Compare bank rates side-by-side and view HSBC’s position versus peers. The UI is React + TypeScript, built with Vite, Tailwind CSS, and Recharts.
+Compare bank rates side-by-side and view HSBC’s position versus peers. The UI is static HTML/CSS/Vanilla JavaScript dashboard in docs/.
 
 ```bash
-python scripts/scrape.py              # ensure data/ is populated
-cd frontend && npm install && npm run dev   # http://localhost:5173
+python scripts/scrape.py              # ensure docs/data/ is populated
+python -m http.server 8000            # Then open http://localhost:8000/docs/ in your browser
 ```
 
 See [frontend/README.md](frontend/README.md).
@@ -70,8 +74,8 @@ See [frontend/README.md](frontend/README.md).
 
 GitHub Actions runs **Monday–Friday** at **6:00 PM IST** (no weekend run). Each run:
 
-1. Downloads **MAS** daily SGD exchange rates for every currency MAS publishes, from the first bank-rate date through today, and writes `data/market/{date}.csv`.
-2. Scrapes the banks and writes `data/consolidated/` with margins vs that day’s MAS mid (`latest.csv`, `{date}.csv`, `index.json`). Existing dated files are re-exported the same way. Weekends, holidays, and currencies MAS does not list keep board buy/sell but leave `mid_rate` / margins blank — they are not filled from bank mid or from a previous day.
+1. Downloads **MAS** daily SGD exchange rates for every currency MAS publishes, from the first bank-rate date through today, and writes `docs/data/market/{date}.csv`.
+2. Scrapes the banks and writes `docs/data/consolidated/` with margins vs that day’s MAS mid (`latest.csv`, `{date}.csv`, `index.json`). Existing dated files are re-exported the same way. Weekends, holidays, and currencies MAS does not list keep board buy/sell but leave `mid_rate` / margins blank — they are not filled from bank mid or from a previous day.
 
 MAS figures are the midday Singapore interbank average (Refinitiv), published on Singapore business days only. Weekends and holidays are **not** filled from a previous day. The JSON datastore API is currently on a maintenance page; the fetcher uses the official [Exchange Rates](https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx) CSV download.
 

@@ -204,12 +204,6 @@ cython_debug/
 data/raw/**
 !data/raw/.gitkeep
 
-# Consolidated CSVs are committed (GitHub source of truth for the dashboard)
-data/consolidated/*_long.csv
-
-# MAS daily rates are committed (same dated-file pattern as consolidated)
-data/market/*_long.csv
-
 # Frontend (Vite build artifacts)
 frontend/node_modules/
 frontend/dist/

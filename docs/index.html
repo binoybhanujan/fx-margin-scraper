@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FX Margin Intelligence</title>
+
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="dashboard-header">
+        <div class="dashboard-container dashboard-header-inner">
+
+            <div class="dashboard-branding">
+
+                <div class="dashboard-title-row">
+
+                    <span class="hsbc-brand">
+                        HSBC
+                    </span>
+
+                    <span class="header-divider"></span>
+
+                    <h1>
+                        FX Margin Intelligence
+                    </h1>
+
+                </div>
+
+                <p class="dashboard-subtitle">
+                    Competitive pricing, market position &amp; opportunity
+                </p>
+
+            </div>
+
+            <div class="dashboard-header-meta">
+
+                <span class="header-meta-label">
+                    DATA AS OF
+                </span>
+
+                <span
+                    id="header-data-date"
+                    class="header-meta-value"
+                >
+                    —
+                </span>
+
+            </div>
+
+        </div>
+</header>
+
+
+    <!-- =====================================================
+         DASHBOARD
+         ===================================================== -->
+
+    <main class="dashboard-container dashboard-main">
+
+        <!-- Loading -->
+        <p id="loading">
+            Loading rates…
+        </p>
+
+
+        <!-- Error -->
+        <div id="error" class="error-message" hidden>
+        </div>
+
+
+        <!-- Dashboard content -->
+        <div id="dashboard" hidden>
+
+
+            <!-- =================================================
+                 EXECUTIVE SUMMARY
+                 ================================================= -->
+
+            <section class="dashboard-tile">
+
+                <header class="tile-header">
+
+                    <h2>
+                        Executive summary
+                    </h2>
+
+                    <p id="insight-band-label"
+                       class="tile-header-aside">
+                    </p>
+
+                </header>
+
+
+                <div class="tile-body">
+
+                    <div class="filter-grid">
+
+                        <label class="field">
+
+                            <span>Date</span>
+
+                            <select id="date-filter">
+                            </select>
+
+                        </label>
+
+
+                        <label class="field">
+
+                            <span>Margin type</span>
+
+                            <select id="rate-type-filter">
+
+                                <option value="tt_od_sell">
+                                    Buy FCY (sell margin % of mid)
+                                </option>
+
+                                <option value="tt_buy">
+                                    Sell FCY (buy margin % of mid)
+                                </option>
+
+                            </select>
+
+                        </label>
+
+                    </div>
+
+
+                    <p id="executive-summary-text"
+                       class="summary-text">
+                    </p>
+
+
+                    <!-- KPI tiles -->
+
+                    <div id="kpi-grid"
+                         class="kpi-grid">
+                    </div>
+
+
+                    <!-- Insight tables -->
+
+                    <div class="insight-grid">
+
+
+                        <div>
+
+                            <h3>
+                                Largest headroom
+                            </h3>
+
+                            <p class="section-description">
+                                Top 3 where HSBC is cheaper than
+                                the peer median.
+                            </p>
+
+                            <div id="largest-headroom">
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                Tightest pressure
+                            </h3>
+
+                            <p class="section-description">
+                                Top 3 where HSBC is widest or above
+                                the peer median.
+                            </p>
+
+                            <div id="tightest-pressure">
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                Market cheapest / dearest
+                            </h3>
+
+                            <p class="section-description">
+                                Median of all quoting banks.
+                            </p>
+
+                            <div id="market-cheapest">
+                            </div>
+
+                            <div id="market-dearest">
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                HSBC book cheapest / dearest
+                            </h3>
+
+                            <p class="section-description">
+                                HSBC's own margin.
+                            </p>
+
+                            <div id="hsbc-cheapest">
+                            </div>
+
+                            <div id="hsbc-dearest">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <p class="dashboard-note">
+
+                        All currencies on the insight band
+                        (default SGD 50 – 200 when the table band is All).
+                        HSBC's single indicative board is copied across
+                        standardized bands. Mid is same-day MAS midday
+                        when published. Missing quotes are not inferred.
+                        Not a pricing recommendation.
+
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 COMPETITOR TREND
+                 ================================================= -->
+
+            <section class="dashboard-tile">
+
+                <header class="tile-header">
+
+                    <h2>
+                        Competitor margin trends
+                    </h2>
+
+                </header>
+
+
+                <div class="tile-body">
+
+                    <div class="chart-toolbar">
+
+                        <p>
+                            HSBC (red) vs DBS, OCBC, and UOB for the
+                            selected currency and insight band.
+                        </p>
+
+                        <label class="field">
+
+                            <span>Trend currency</span>
+
+                            <select id="trend-currency-filter">
+                            </select>
+
+                        </label>
+
+                    </div>
+
+
+                    <div id="competitor-trend-chart-container"
+                         class="chart-container">
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 HSBC VS MARKET
+                 ================================================= -->
+
+            <section class="dashboard-tile">
+
+                <header class="tile-header">
+
+                    <h2>
+                        HSBC vs the market
+                    </h2>
+
+                </header>
+
+
+                <div class="tile-body">
+
+                    <p class="section-description">
+                        Same currency, insight band, and scrape dates
+                        as competitor trends. Days without an HSBC
+                        quote stay on the axis (rank is blank).
+                        Rank 1 is cheapest for the customer.
+                    </p>
+
+
+                    <div class="two-column-grid">
+
+                        <div>
+
+                            <h3>
+                                HSBC vs peer median
+                            </h3>
+
+                            <div id="peer-median-chart-container"
+                                 class="chart-container">
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                HSBC rank over time
+                            </h3>
+
+                            <div id="rank-chart-container"
+                                 class="chart-container">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 HEADROOM
+                 ================================================= -->
+
+            <section class="dashboard-tile">
+
+                <header class="tile-header">
+
+                    <h2>
+                        Headroom by currency
+                    </h2>
+
+                </header>
+
+
+                <div class="tile-body">
+
+                    <p class="section-description">
+                        Peer median minus HSBC on the selected date.
+                        Grey = cheaper than typical peer (room to widen).
+                        Red = already wider than typical.
+                    </p>
+
+
+                    <div id="headroom-chart-container"
+                         class="chart-container">
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 BANK COMPARISON
+                 ================================================= -->
+
+            <section class="dashboard-tile">
+
+                <header class="tile-header">
+
+                    <h2>
+                        Bank comparison
+                    </h2>
+
+                </header>
+
+
+                <div class="tile-body">
+
+                    <p class="section-description">
+                        Detail of every quoting bank.
+                        Currency and band apply only to this table.
+                    </p>
+
+
+                    <div class="filter-grid">
+
+                        <label class="field">
+
+                            <span>Currency</span>
+
+                            <select id="currency-filter">
+                            </select>
+
+                        </label>
+
+
+                        <label class="field">
+
+                            <span>Transaction band</span>
+
+                            <select id="transaction-filter">
+                            </select>
+
+                        </label>
+
+                    </div>
+
+
+                    <div id="comparison-table-container">
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         LIBRARIES
+         ===================================================== -->
+
+    <script src="./vendor/chart.umd.min.js"></script>
+    <script src="./vendor/papaparse.min.js"></script>
+
+    <script type="module"
+            src="./js/app.js">
+    </script>
+
+</div>
+
+</body>
+</html>
