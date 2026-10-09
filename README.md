@@ -24,8 +24,8 @@ fx-margin-scraper/
 │   │   ├── consolidated/    # Merged bank CSVs (committed; GitHub source of truth)
 │   │   └── market/          # MAS daily SGD rates (committed)
 │   ├── css/                 # CSS styling of the dashboard
-│   ├── js/                  # Java script modules of the dashboard
-│   └── vendor/              # JS packages requied for the dashboard
+│   ├── js/                  # JavaScript modules of the dashboard
+│   └── vendor/              # JS packages required for the dashboard
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -65,7 +65,7 @@ Compare bank rates side-by-side and view HSBC’s position versus peers. The UI 
 
 ```bash
 python scripts/scrape.py              # ensure docs/data/ is populated
-
+python -m http.server 8000            # Then open http://localhost:8000/docs/ in your browser
 ```
 
 See [frontend/README.md](frontend/README.md).
