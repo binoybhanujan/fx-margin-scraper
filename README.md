@@ -19,7 +19,7 @@ fx-margin-scraper/
 │       └── __init__.py      # Scraper registry
 ├── scripts/
 │   └── scrape.py            # Run scraper (no install required)
-├── docs
+├── docs/
 │   ├── data/
 │   │   ├── consolidated/    # Merged bank CSVs (committed; GitHub source of truth)
 │   │   └── market/          # MAS daily SGD rates (committed)
