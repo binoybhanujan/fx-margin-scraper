@@ -61,11 +61,11 @@ After a run:
 
 ## Dashboard (frontend)
 
-Compare bank rates side-by-side and view HSBC’s position versus peers. The UI is React + TypeScript, built with Vite, Tailwind CSS, and Recharts.
+Compare bank rates side-by-side and view HSBC’s position versus peers. The UI is static HTML/CSS/Vanilla JavaScript dashboard in docs/.
 
 ```bash
-python scripts/scrape.py              # ensure data/ is populated
-cd frontend && npm install && npm run dev   # http://localhost:5173
+python scripts/scrape.py              # ensure docs/data/ is populated
+
 ```
 
 See [frontend/README.md](frontend/README.md).
@@ -74,8 +74,8 @@ See [frontend/README.md](frontend/README.md).
 
 GitHub Actions runs **Monday–Friday** at **6:00 PM IST** (no weekend run). Each run:
 
-1. Downloads **MAS** daily SGD exchange rates for every currency MAS publishes, from the first bank-rate date through today, and writes `data/market/{date}.csv`.
-2. Scrapes the banks and writes `dcos/data/consolidated/` with margins vs that day’s MAS mid (`latest.csv`, `{date}.csv`, `index.json`). Existing dated files are re-exported the same way. Weekends, holidays, and currencies MAS does not list keep board buy/sell but leave `mid_rate` / margins blank — they are not filled from bank mid or from a previous day.
+1. Downloads **MAS** daily SGD exchange rates for every currency MAS publishes, from the first bank-rate date through today, and writes `docs/data/market/{date}.csv`.
+2. Scrapes the banks and writes `docs/data/consolidated/` with margins vs that day’s MAS mid (`latest.csv`, `{date}.csv`, `index.json`). Existing dated files are re-exported the same way. Weekends, holidays, and currencies MAS does not list keep board buy/sell but leave `mid_rate` / margins blank — they are not filled from bank mid or from a previous day.
 
 MAS figures are the midday Singapore interbank average (Refinitiv), published on Singapore business days only. Weekends and holidays are **not** filled from a previous day. The JSON datastore API is currently on a maintenance page; the fetcher uses the official [Exchange Rates](https://eservices.mas.gov.sg/Statistics/msb/ExchangeRates.aspx) CSV download.
 
