@@ -15,40 +15,46 @@ class StandardizedTier:
     max_sgd: float
 
 
-# Four canonical SGD-equivalent bands for cross-bank comparison.
+# Five canonical SGD-equivalent bands for cross-bank comparison.
 STANDARDIZED_TIERS: tuple[StandardizedTier, ...] = (
-    StandardizedTier("std_lt_50", "SGD < 50", 0, 49.99),
-    StandardizedTier("std_50_200", "SGD 50 – 200", 50, 200),
-    StandardizedTier("std_200_40k", "SGD 200 – 39,999.99", 200.01, 39999.99),
-    StandardizedTier("std_40k_100k", "SGD 40,000 – 100,000", 40000, 100000),
+    StandardizedTier("std_0_14k", "SGD 0 – 14,000", 0, 14000),
+    StandardizedTier("std_14k_28k", "SGD 14,000 – 28,000", 14000.01, 28000),
+    StandardizedTier("std_28k_70k", "SGD 28,000 – 70,000", 28000.01, 70000),
+    StandardizedTier("std_70k_280k", "SGD 70,000 – 280,000", 70000.01, 280000),
+    StandardizedTier("std_280k_plus", "SGD 280,000+", 280000.01, float("inf")),
 )
 
-# Native amount_tier to use for each standardized band. DBS has no published
-# tier above SGD 200, so larger bands fall back to amtBtw50And200.
+# Native amount_tier to use for each standardized band. DBS's public converter
+# uses amtLessThan50 for any amount, so every standardized band maps to that.
+# OCBC tier_2 starts at SGD 40,000; bands from 28k upward use that published tier.
 STANDARDIZED_TIER_NATIVE_MAP: dict[str, dict[str, str]] = {
     "dbs": {
-        "std_lt_50": "amtLessThan50",
-        "std_50_200": "amtBtw50And200",
-        "std_200_40k": "amtBtw50And200",
-        "std_40k_100k": "amtBtw50And200",
+        "std_0_14k": "amtLessThan50",
+        "std_14k_28k": "amtLessThan50",
+        "std_28k_70k": "amtLessThan50",
+        "std_70k_280k": "amtLessThan50",
+        "std_280k_plus": "amtLessThan50",
     },
     "ocbc": {
-        "std_lt_50": "tier_1",
-        "std_50_200": "tier_1",
-        "std_200_40k": "tier_1",
-        "std_40k_100k": "tier_2",
+        "std_0_14k": "tier_1",
+        "std_14k_28k": "tier_1",
+        "std_28k_70k": "tier_2",
+        "std_70k_280k": "tier_2",
+        "std_280k_plus": "tier_2",
     },
     "uob": {
-        "std_lt_50": "board",
-        "std_50_200": "board",
-        "std_200_40k": "board",
-        "std_40k_100k": "board",
+        "std_0_14k": "board",
+        "std_14k_28k": "board",
+        "std_28k_70k": "board",
+        "std_70k_280k": "board",
+        "std_280k_plus": "board",
     },
     "hsbc": {
-        "std_lt_50": "board",
-        "std_50_200": "board",
-        "std_200_40k": "board",
-        "std_40k_100k": "board",
+        "std_0_14k": "board",
+        "std_14k_28k": "board",
+        "std_28k_70k": "board",
+        "std_70k_280k": "board",
+        "std_280k_plus": "board",
     },
 }
 

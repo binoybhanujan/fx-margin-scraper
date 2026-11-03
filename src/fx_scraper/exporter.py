@@ -15,7 +15,7 @@ from fx_scraper.market import (
     load_mas_rates_by_iso,
     mas_mid_in_bank_unit,
 )
-from fx_scraper.models import FxRatesSnapshot, compute_margin_pct_of_mid
+from fx_scraper.models import FxRate, FxRatesSnapshot, compute_margin_pct_of_mid
 from fx_scraper.std_bands import build_standardized_rates
 
 logger = logging.getLogger(__name__)
@@ -202,8 +202,63 @@ def save_consolidated_csv(
     _write_csv(all_rows, path)
 
 
+def _fx_rate_from_native_row(row: dict[str, Any]) -> FxRate:
+    unit_val = _parse_optional_float(row.get("unit"))
+    return FxRate(
+        record_type="native",
+        bank=str(row.get("bank") or ""),
+        base_currency=str(row.get("base_currency") or ""),
+        quote_currency=str(row.get("quote_currency") or ""),
+        currency_pair=str(row.get("currency_pair") or ""),
+        unit=int(unit_val) if unit_val is not None else 1,
+        group=str(row.get("group") or ""),
+        amount_tier=str(row.get("amount_tier") or ""),
+        transaction_value=str(row.get("transaction_value") or ""),
+        std_amount_tier=None,
+        std_transaction_value=None,
+        tt_od_sell=_parse_optional_float(row.get("tt_od_sell")),
+        tt_buy=_parse_optional_float(row.get("tt_buy")),
+        mid_rate=_existing_bank_mid(row),
+    )
+
+
+def _snapshots_from_native_rows(rows: list[dict[str, Any]]) -> list[FxRatesSnapshot]:
+    by_bank: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        if str(row.get("record_type") or "") != "native":
+            continue
+        by_bank.setdefault(str(row.get("bank") or ""), []).append(row)
+
+    snapshots: list[FxRatesSnapshot] = []
+    for bank, bank_rows in by_bank.items():
+        sample = bank_rows[0]
+        snapshots.append(
+            FxRatesSnapshot(
+                bank=bank,
+                source_url="",
+                effective_date=str(sample.get("effective_date") or ""),
+                last_updated=str(sample.get("last_updated") or ""),
+                scraped_at=str(sample.get("scraped_at") or ""),
+                rates=[_fx_rate_from_native_row(row) for row in bank_rows],
+            )
+        )
+    return snapshots
+
+
+def _sort_consolidated_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(
+        rows,
+        key=lambda row: (
+            row["record_type"],
+            row["bank"],
+            row["base_currency"],
+            row.get("std_amount_tier") or row["amount_tier"],
+        ),
+    )
+
+
 def rewrite_consolidated_margins(consolidated_dir: Path, market_dir: Path) -> int:
-    """Recompute mid/margins on dated consolidated CSVs from stored board rates."""
+    """Rebuild standardized rows from stored native rates and recompute MAS mids."""
     dated_paths = sorted(
         path
         for path in consolidated_dir.glob("*.csv")
@@ -218,10 +273,18 @@ def rewrite_consolidated_margins(consolidated_dir: Path, market_dir: Path) -> in
         mas_by_iso = load_mas_rates_by_iso(market_dir, day)
         with path.open(newline="", encoding="utf-8") as handle:
             rows = list(csv.DictReader(handle))
-        updated = [
-            apply_mas_mid_fields(row, mas_by_iso, bank_mid=_existing_bank_mid(row))
-            for row in rows
+        native_rows = [
+            row for row in rows if str(row.get("record_type") or "") == "native"
         ]
+        updated_native = [
+            apply_mas_mid_fields(row, mas_by_iso, bank_mid=_existing_bank_mid(row))
+            for row in native_rows
+        ]
+        std_rows: list[dict[str, Any]] = []
+        for snapshot in _snapshots_from_native_rows(native_rows):
+            for rate in build_standardized_rates(snapshot):
+                std_rows.append(_rate_row(rate, snapshot, mas_by_iso))
+        updated = _sort_consolidated_rows(updated_native + std_rows)
         _write_csv(updated, path)
         rewritten += 1
         logger.info(

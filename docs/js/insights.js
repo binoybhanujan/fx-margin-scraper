@@ -10,7 +10,7 @@ import {
 export const HSBC_BANK = "hsbc";
 
 export const DEFAULT_INSIGHT_BAND =
-    "SGD 50 – 200";
+    "SGD 0 – 14,000";
 
 
 function median(values) {

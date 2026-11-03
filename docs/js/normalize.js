@@ -7,9 +7,9 @@
  * Sort key from a standardized transaction-band label.
  *
  * Examples:
- * "< SGD 50"
- * "SGD 50 – 200"
- * "SGD 200 – 1,000"
+ * "SGD 0 – 14,000"
+ * "SGD 14,000 – 28,000"
+ * "SGD 280,000+"
  */
 export function transactionBandSortKey(label) {
     const trimmed = String(label ?? "").trim();

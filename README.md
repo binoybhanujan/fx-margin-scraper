@@ -90,7 +90,7 @@ Workflow: `.github/workflows/daily-scrape.yml` (also runnable from **Actions →
 
 | Bank | Status | Native tiers | Standardized bands (dashboard) |
 |------|--------|--------------|--------------------------------|
-| DBS  | ✅ Implemented | SGD &lt; 50, SGD 50 – 200 | 4 bands (see `std_bands.py`) |
-| OCBC | ✅ Implemented | SGD 0 – 39,999.99, SGD 40,000 – 100,000 | Same 4 standardized bands |
-| UOB  | ✅ Implemented | Single indicative board (no SGD amount tiers) | Same 4 bands (fallback to board) |
-| HSBC | ✅ Implemented | Single indicative board (HTML; no SGD amount tiers) | Same 4 bands (fallback to board) |
+| DBS  | ✅ Implemented | SGD &lt; 50, SGD 50 – 200 | 5 bands (see `std_bands.py`; all use converter-aligned `amtLessThan50`) |
+| OCBC | ✅ Implemented | SGD 0 – 39,999.99, SGD 40,000 – 100,000 | Same 5 bands (`tier_1` below 28k, `tier_2` from 28k) |
+| UOB  | ✅ Implemented | Single indicative board (no SGD amount tiers) | Same 5 bands (fallback to board) |
+| HSBC | ✅ Implemented | Single indicative board (HTML; no SGD amount tiers) | Same 5 bands (fallback to board) |
