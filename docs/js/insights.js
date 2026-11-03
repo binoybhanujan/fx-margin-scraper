@@ -585,6 +585,13 @@ export function buildHsbcTimeSeries(
             }
         }
 
+        if (
+            point.hsbc == null &&
+            point.peerMedian == null &&
+            point.rank == null
+        ) {
+            continue;
+        }
 
         series.push(point);
     }
