@@ -1,10 +1,10 @@
 import {
     buildComparisonRows
-} from "./comparison.js";
+} from "./comparison.js?v=bands2";
 
 import {
     formatRate
-} from "./normalize.js";
+} from "./normalize.js?v=bands2";
 
 
 export const HSBC_BANK = "hsbc";

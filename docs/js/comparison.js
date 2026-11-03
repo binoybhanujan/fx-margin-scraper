@@ -2,10 +2,11 @@ import {
     getRateValue,
     getTransactionBand,
     isLowerBetter,
+    isStandardizedBand,
     isStandardizedRow,
-    sortTransactionBands,
+    STANDARDIZED_BAND_LABELS,
     transactionBandSortKey
-} from "./normalize.js";
+} from "./normalize.js?v=bands2";
 
 
 /**
@@ -42,6 +43,10 @@ export function buildComparisonRows(
 
         const band = getTransactionBand(row);
 
+        if (!isStandardizedBand(band)) {
+            return false;
+        }
+
         if (
             transactionValue !== "all" &&
             band !== transactionValue
@@ -59,6 +64,10 @@ export function buildComparisonRows(
     for (const row of filtered) {
 
         const band = getTransactionBand(row);
+
+        if (!isStandardizedBand(band)) {
+            continue;
+        }
 
         const key =
             `${row.currency_pair}|${band}`;
@@ -231,15 +240,17 @@ export function uniqueBaseCurrencies(
  */
 export function uniqueTransactionValues(rows) {
 
-    const values =
-        rows
-            .filter(isStandardizedRow)
-            .map(getTransactionBand)
-            .filter(value => value.length > 0);
+    const present =
+        new Set(
+            rows
+                .filter(isStandardizedRow)
+                .map(getTransactionBand)
+                .filter(isStandardizedBand)
+        );
 
 
-    return sortTransactionBands(
-        [...new Set(values)]
+    return STANDARDIZED_BAND_LABELS.filter(
+        label => present.has(label)
     );
 }
 
@@ -256,7 +267,7 @@ export function uniqueBanks(rows) {
     ].sort();
 }
 
-import { formatRate } from "./normalize.js";
+import { formatRate } from "./normalize.js?v=bands2";
 import { escapeHtml } from "./utils.js";
 
 export function renderComparisonTable(
@@ -306,7 +317,9 @@ export function renderComparisonTable(
     }).join("");
 
 
-    const bodyRows = rows.map(row => {
+    const bodyRows = rows
+        .filter(row => isStandardizedBand(row.transaction_value))
+        .map(row => {
 
         const bankCells =
             banks.map(bank => {

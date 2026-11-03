@@ -337,6 +337,18 @@ body {
     font-variant-numeric: tabular-nums;
 }
 
+.kpi-value-compact {
+    font-size: 15px;
+}
+
+.kpi-hint {
+    margin: 4px 0 0;
+
+    color: #5c5c5c;
+
+    font-size: 11px;
+}
+
 
 /* =========================================================
    INSIGHTS

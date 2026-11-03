@@ -4,6 +4,29 @@
  */
 
 /**
+ * Canonical standardized SGD bands (same labels as std_bands.py).
+ */
+export const STANDARDIZED_BAND_LABELS = [
+    "SGD 0 – 14,000",
+    "SGD 14,000 – 28,000",
+    "SGD 28,000 – 70,000",
+    "SGD 70,000 – 280,000",
+    "SGD 280,000+"
+];
+
+
+/**
+ * True when the label is one of the standardized comparison bands.
+ */
+export function isStandardizedBand(label) {
+
+    return STANDARDIZED_BAND_LABELS.includes(
+        String(label ?? "").trim()
+    );
+}
+
+
+/**
  * Sort key from a standardized transaction-band label.
  *
  * Examples:
@@ -94,9 +117,14 @@ export function getRateValue(row, rateType) {
 
 /**
  * Return the standardized transaction band.
+ * Native bank tiers are not used for comparison.
  */
 export function getTransactionBand(row) {
-    return row.std_transaction_value ?? row.transaction_value;
+
+    const std =
+        String(row.std_transaction_value ?? "").trim();
+
+    return isStandardizedBand(std) ? std : "";
 }
 
 

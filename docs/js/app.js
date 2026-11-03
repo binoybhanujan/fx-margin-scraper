@@ -18,13 +18,13 @@ import {
     uniqueBaseCurrencies,
     uniqueTransactionValues,
     renderComparisonTable
-} from "./comparison.js";
+} from "./comparison.js?v=bands2";
 
 import {
     getTransactionBand,
     getRateValue,
     rateTypeLabel
-} from "./normalize.js";
+} from "./normalize.js?v=bands2";
 
 import {
     escapeHtml,
@@ -76,7 +76,11 @@ const state = {
 
     insightBand: "",
 
-    insights: null
+    insights: null,
+
+    historical: new Map(),
+
+    priorMonthChange: null
 
 };
 
@@ -280,6 +284,16 @@ async function loadSnapshot(date) {
 
 
     if (
+        state.transactionValue !== "all" &&
+        !state.transactionBands.includes(
+            state.transactionValue
+        )
+    ) {
+        state.transactionValue = "all";
+    }
+
+
+    if (
         !state.currencies.includes(
             state.trendCurrency
         )
@@ -310,6 +324,7 @@ async function buildHistoricalChartData() {
 
         state.trendPoints = [];
         state.peerSeries = [];
+        state.historical = new Map();
 
         return [];
     }
@@ -319,6 +334,10 @@ async function buildHistoricalChartData() {
         await loadHistoricalRates(
             state.historyDates
         );
+
+
+    state.historical =
+        historical;
 
 
     const bands =
@@ -445,6 +464,162 @@ async function buildHistoricalChartData() {
 
 
     return trendPoints;
+}
+
+
+function calendarDateMinusOneMonth(isoDate) {
+
+    const parts =
+        String(isoDate).split("-").map(Number);
+
+
+    if (
+        parts.length !== 3 ||
+        parts.some(
+            n => !Number.isFinite(n)
+        )
+    ) {
+        return null;
+    }
+
+
+    const [year, month, day] =
+        parts;
+
+
+    let y = year;
+    let m = month - 1;
+
+
+    if (m < 1) {
+        m = 12;
+        y -= 1;
+    }
+
+
+    const lastDay =
+        new Date(
+            Date.UTC(y, m, 0)
+        ).getUTCDate();
+
+
+    const d =
+        Math.min(day, lastDay);
+
+
+    return [
+        String(y).padStart(4, "0"),
+        String(m).padStart(2, "0"),
+        String(d).padStart(2, "0")
+    ].join("-");
+}
+
+
+function findPriorMonthDate(dates, selectedDate) {
+
+    const target =
+        calendarDateMinusOneMonth(
+            selectedDate
+        );
+
+
+    if (!target) {
+        return null;
+    }
+
+
+    const earlier =
+        dates
+            .filter(
+                date =>
+                    date < selectedDate &&
+                    date <= target
+            )
+            .sort(
+                (a, b) =>
+                    b.localeCompare(a)
+            );
+
+
+    return earlier[0] ?? null;
+}
+
+
+function computePriorMonthGapChange() {
+
+    const current =
+        state.insights?.kpis?.medianGapVsCheapest;
+
+
+    if (
+        current == null ||
+        !state.insightBand ||
+        !state.historical
+    ) {
+        return {
+            value: null,
+            priorDate: null
+        };
+    }
+
+
+    const availableDates =
+        [...state.historical.keys()];
+
+
+    const priorDate =
+        findPriorMonthDate(
+            availableDates,
+            state.selectedDate
+        );
+
+
+    if (!priorDate) {
+        return {
+            value: null,
+            priorDate: null
+        };
+    }
+
+
+    const priorRows =
+        filterStandardizedRows(
+            state.historical.get(priorDate) ?? []
+        );
+
+
+    const priorComparison =
+        buildComparisonRows(
+            priorRows,
+            state.rateType,
+            "all",
+            state.insightBand
+        );
+
+
+    const priorInsights =
+        buildHsbcInsights(
+            priorComparison,
+            state.insightBand
+        );
+
+
+    const prior =
+        priorInsights.kpis.medianGapVsCheapest;
+
+
+    if (prior == null) {
+        return {
+            value: null,
+            priorDate
+        };
+    }
+
+
+    return {
+        value: current - prior,
+        priorDate
+    };
 }
 
 
@@ -629,49 +804,68 @@ function renderExecutiveSummary() {
      * KPI tiles
      */
 
+    const priorMonth =
+        state.priorMonthChange;
+
+
     const kpis = [
 
-        [
-            "HSBC quotes",
-            String(insights.kpis.quoted)
-        ],
+        {
+            label: "HSBC quotes",
+            value: String(insights.kpis.quoted)
+        },
 
-        [
-            "HSBC cheapest",
-            String(insights.kpis.cheapestCount)
-        ],
+        {
+            label: "Competitive position",
+            value:
+                `${insights.kpis.cheapestCount} cheapest · ${insights.kpis.mostExpensiveCount} most expensive`,
+            hint:
+                "Pair counts this snapshot",
+            compact: true
+        },
 
-        [
-            "HSBC most expensive",
-            String(insights.kpis.mostExpensiveCount)
-        ],
+        {
+            label: "Change vs. prior month",
+            value: formatPp(
+                priorMonth?.value ?? null
+            ),
+            hint: priorMonth?.priorDate
+                ? `Median gap vs cheapest vs ${priorMonth.priorDate}`
+                : "No scrape on or before one month earlier"
+        },
 
-        [
-            "Median HSBC rank",
-            medianRank
-        ],
+        {
+            label: "Median HSBC rank",
+            value: medianRank
+        },
 
-        [
-            "Median gap vs cheapest",
-            formatPp(
+        {
+            label: "Median gap vs cheapest",
+            value: formatPp(
                 insights.kpis.medianGapVsCheapest
             )
-        ]
+        }
     ];
 
 
     elements.kpiGrid.innerHTML =
         kpis.map(
-            ([label, value]) => `
+            kpi => `
                 <div class="kpi-card">
 
                     <p class="kpi-label">
-                        ${escapeHtml(label)}
+                        ${escapeHtml(kpi.label)}
                     </p>
 
-                    <p class="kpi-value">
-                        ${escapeHtml(value)}
+                    <p class="kpi-value${kpi.compact ? " kpi-value-compact" : ""}">
+                        ${escapeHtml(kpi.value)}
                     </p>
+
+                    ${
+                        kpi.hint
+                            ? `<p class="kpi-hint">${escapeHtml(kpi.hint)}</p>`
+                            : ""
+                    }
 
                 </div>
             `
@@ -927,6 +1121,10 @@ async function renderDashboard() {
 
     state.trendPoints =
         trendPoints;
+
+
+    state.priorMonthChange =
+        computePriorMonthGapChange();
 
 
     /*
