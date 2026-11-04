@@ -73,12 +73,25 @@ body {
 
 /* HSBC */
 
-.hsbc-brand {
-    color: #db0011;
-    font-size: 23px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    line-height: 1;
+.hsbc-lockup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.hsbc-wordmark {
+    display: block;
+    height: 20px;
+    width: auto;
+    flex-shrink: 0;
+}
+
+.hsbc-logo {
+    display: block;
+    height: 23px;
+    width: auto;
+    flex-shrink: 0;
 }
 
 
@@ -87,7 +100,7 @@ body {
 .header-divider {
     width: 1px;
 
-    height: 26px;
+    height: 23px;
 
     background: #777777;
 
