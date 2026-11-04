@@ -6,7 +6,7 @@ import {
     isStandardizedRow,
     STANDARDIZED_BAND_LABELS,
     transactionBandSortKey
-} from "./normalize.js?v=bands2";
+} from "./normalize.js?v=zero1";
 
 
 /**
@@ -267,7 +267,7 @@ export function uniqueBanks(rows) {
     ].sort();
 }
 
-import { formatRate } from "./normalize.js?v=bands2";
+import { formatRate } from "./normalize.js?v=zero1";
 import { escapeHtml } from "./utils.js";
 
 export function renderComparisonTable(

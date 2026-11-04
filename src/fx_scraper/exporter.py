@@ -56,6 +56,20 @@ def _parse_optional_float(value: Any) -> float | None:
     return float(text)
 
 
+def _parse_quoted_rate(value: Any) -> float | None:
+    """Board buy/sell. Zero is OCBC's unpublished-quote placeholder."""
+    parsed = _parse_optional_float(value)
+    if parsed is None or parsed == 0:
+        return None
+    return parsed
+
+
+def _blank_unquoted_board_rates(row: dict[str, Any]) -> dict[str, Any]:
+    row["tt_od_sell"] = _parse_quoted_rate(row.get("tt_od_sell"))
+    row["tt_buy"] = _parse_quoted_rate(row.get("tt_buy"))
+    return row
+
+
 def _existing_bank_mid(row: dict[str, Any]) -> float | None:
     """Bank-published or buy/sell-average mid. Never treat an MAS mid as the bank mid."""
     stored = _parse_optional_float(row.get("bank_mid_rate"))
@@ -111,12 +125,12 @@ def apply_mas_mid_fields(
     row["mid_rate"] = mas_mid
     row["mid_source"] = mid_source
     row["sell_margin_pct"] = compute_margin_pct_of_mid(
-        _parse_optional_float(row.get("tt_od_sell")),
+        _parse_quoted_rate(row.get("tt_od_sell")),
         mas_mid,
         customer_buys_fcy=True,
     )
     row["buy_margin_pct"] = compute_margin_pct_of_mid(
-        _parse_optional_float(row.get("tt_buy")),
+        _parse_quoted_rate(row.get("tt_buy")),
         mas_mid,
         customer_buys_fcy=False,
     )
@@ -216,8 +230,8 @@ def _fx_rate_from_native_row(row: dict[str, Any]) -> FxRate:
         transaction_value=str(row.get("transaction_value") or ""),
         std_amount_tier=None,
         std_transaction_value=None,
-        tt_od_sell=_parse_optional_float(row.get("tt_od_sell")),
-        tt_buy=_parse_optional_float(row.get("tt_buy")),
+        tt_od_sell=_parse_quoted_rate(row.get("tt_od_sell")),
+        tt_buy=_parse_quoted_rate(row.get("tt_buy")),
         mid_rate=_existing_bank_mid(row),
     )
 
@@ -274,7 +288,9 @@ def rewrite_consolidated_margins(consolidated_dir: Path, market_dir: Path) -> in
         with path.open(newline="", encoding="utf-8") as handle:
             rows = list(csv.DictReader(handle))
         native_rows = [
-            row for row in rows if str(row.get("record_type") or "") == "native"
+            _blank_unquoted_board_rates(row)
+            for row in rows
+            if str(row.get("record_type") or "") == "native"
         ]
         updated_native = [
             apply_mas_mid_fields(row, mas_by_iso, bank_mid=_existing_bank_mid(row))

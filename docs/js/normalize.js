@@ -72,8 +72,21 @@ export function normalizeRate(rate, unit) {
  * tt_buy:
  * Customer sells FCY → bank buys FCY.
  */
+function quotedRate(rate) {
+    if (rate == null || rate === 0) {
+        return null;
+    }
+
+    return rate;
+}
+
+
 function marginPctOfMid(rate, mid, customerBuysFcy) {
-    if (rate == null || mid == null || mid === 0) {
+    if (
+        quotedRate(rate) == null ||
+        mid == null ||
+        mid === 0
+    ) {
         return null;
     }
 
@@ -90,6 +103,10 @@ export function getRateValue(row, rateType) {
     switch (rateType) {
 
         case "tt_od_sell":
+            if (quotedRate(row.tt_od_sell) == null) {
+                return null;
+            }
+
             return (
                 row.sell_margin_pct ??
                 marginPctOfMid(
@@ -100,6 +117,10 @@ export function getRateValue(row, rateType) {
             );
 
         case "tt_buy":
+            if (quotedRate(row.tt_buy) == null) {
+                return null;
+            }
+
             return (
                 row.buy_margin_pct ??
                 marginPctOfMid(

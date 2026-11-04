@@ -30,6 +30,11 @@ def _tier_key(tier_level: int) -> str:
     return f"tier_{tier_level}"
 
 
+def _parse_quoted_rate(value: Any) -> float | None:
+    parsed = float(value)
+    return parsed if parsed != 0.0 else None
+
+
 def _parse_tier_configs(raw: dict[str, Any]) -> dict[int, dict[str, Any]]:
     configs: dict[int, dict[str, Any]] = {}
     for entry in raw.get("tieredAmountConfigForSgd", []):
@@ -71,8 +76,8 @@ class OcbcScraper(BankScraper):
                 min_amount = float(tier_config.get("minAmount", 0))
                 max_amount = float(tier_config.get("maxAmount", 0))
                 transaction_value = _tier_label(quote_currency, min_amount, max_amount)
-                tt_od_sell = float(tier_rate["bankSellRate"])
-                tt_buy = float(tier_rate["bankBuyRate"])
+                tt_od_sell = _parse_quoted_rate(tier_rate["bankSellRate"])
+                tt_buy = _parse_quoted_rate(tier_rate["bankBuyRate"])
 
                 rates.append(
                     FxRate(

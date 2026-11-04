@@ -3,7 +3,7 @@
  * Static browser data loader.
  */
 
-import { getTransactionBand } from "./normalize.js?v=bands2";
+import { getTransactionBand } from "./normalize.js?v=zero1";
 
 
 /**

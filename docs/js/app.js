@@ -18,13 +18,13 @@ import {
     uniqueBaseCurrencies,
     uniqueTransactionValues,
     renderComparisonTable
-} from "./comparison.js?v=bands2";
+} from "./comparison.js?v=zero1";
 
 import {
     getTransactionBand,
     getRateValue,
     rateTypeLabel
-} from "./normalize.js?v=bands2";
+} from "./normalize.js?v=zero1";
 
 import {
     escapeHtml,
@@ -804,46 +804,105 @@ function renderExecutiveSummary() {
      * KPI tiles
      */
 
+    const quoted =
+        insights.kpis.quoted;
+
+    const cheapestCount =
+        insights.kpis.cheapestCount;
+
+    const mostExpensiveCount =
+        insights.kpis.mostExpensiveCount;
+
     const priorMonth =
         state.priorMonthChange;
+
+    const monthChange =
+        priorMonth?.value ?? null;
+
+    const monthStatus =
+        monthChange == null || monthChange === 0
+            ? null
+            : monthChange < 0
+                ? {
+                    text: "Improved",
+                    className: "kpi-status-good"
+                }
+                : {
+                    text: "Worsened",
+                    className: "kpi-status-bad"
+                };
+
+    const positionTotal =
+        cheapestCount + mostExpensiveCount;
+
+    const positionBar =
+        positionTotal > 0
+            ? `
+                <div class="kpi-bar"
+                     role="img"
+                     aria-label="${escapeHtml(
+                         `${cheapestCount} cheapest, ${mostExpensiveCount} most expensive`
+                     )}">
+                    ${
+                        cheapestCount > 0
+                            ? `<span class="kpi-bar-segment kpi-bar-cheap" style="flex: ${cheapestCount} 1 0;"></span>`
+                            : ""
+                    }
+                    ${
+                        mostExpensiveCount > 0
+                            ? `<span class="kpi-bar-segment kpi-bar-dear" style="flex: ${mostExpensiveCount} 1 0;"></span>`
+                            : ""
+                    }
+                </div>
+            `
+            : "";
 
 
     const kpis = [
 
         {
             label: "HSBC quotes",
-            value: String(insights.kpis.quoted)
+            value: String(quoted),
+            barHtml: "",
+            support: "Currencies",
+            status: null
         },
 
         {
             label: "Competitive position",
             value:
-                `${insights.kpis.cheapestCount} cheapest · ${insights.kpis.mostExpensiveCount} most expensive`,
-            hint:
-                "Pair counts this snapshot",
-            compact: true
+                `${cheapestCount} / ${mostExpensiveCount}`,
+            barHtml: positionBar,
+            support: "Cheapest / most expensive",
+            status: null
         },
 
         {
-            label: "Change vs. prior month",
-            value: formatPp(
-                priorMonth?.value ?? null
-            ),
-            hint: priorMonth?.priorDate
-                ? `Median gap vs cheapest vs ${priorMonth.priorDate}`
-                : "No scrape on or before one month earlier"
+            label: "Month-on-month",
+            value: formatPp(monthChange),
+            barHtml: "",
+            support: priorMonth?.priorDate
+                ? `Median gap vs ${priorMonth.priorDate}`
+                : "No scrape on or before one month earlier",
+            status: monthStatus
         },
 
         {
             label: "Median HSBC rank",
-            value: medianRank
+            value: medianRank,
+            barHtml: "",
+            support: "Across currencies",
+            status: null
         },
 
         {
             label: "Median gap vs cheapest",
             value: formatPp(
                 insights.kpis.medianGapVsCheapest
-            )
+            ),
+            barHtml: "",
+            support: "Pricing premium",
+            status: null
         }
     ];
 
@@ -851,23 +910,29 @@ function renderExecutiveSummary() {
     elements.kpiGrid.innerHTML =
         kpis.map(
             kpi => `
-                <div class="kpi-card">
+                <article class="kpi-card">
 
                     <p class="kpi-label">
                         ${escapeHtml(kpi.label)}
                     </p>
 
-                    <p class="kpi-value${kpi.compact ? " kpi-value-compact" : ""}">
+                    <p class="kpi-value">
                         ${escapeHtml(kpi.value)}
                     </p>
 
+                    ${kpi.barHtml}
+
+                    <p class="kpi-support">
+                        ${escapeHtml(kpi.support)}
+                    </p>
+
                     ${
-                        kpi.hint
-                            ? `<p class="kpi-hint">${escapeHtml(kpi.hint)}</p>`
+                        kpi.status
+                            ? `<p class="kpi-status ${kpi.status.className}">${escapeHtml(kpi.status.text)}</p>`
                             : ""
                     }
 
-                </div>
+                </article>
             `
         ).join("");
 

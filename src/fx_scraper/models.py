@@ -27,7 +27,7 @@ def compute_margin_pct_of_mid(
     customer_buys_fcy: bool,
 ) -> float | None:
     """Margin vs mid as a percent of mid. None if rate or mid is missing."""
-    if rate is None or mid is None or mid == 0:
+    if rate is None or rate == 0 or mid is None or mid == 0:
         return None
     if customer_buys_fcy:
         return (rate - mid) / mid * 100
